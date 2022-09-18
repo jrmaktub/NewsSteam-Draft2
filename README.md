@@ -149,7 +149,7 @@ Displays The user address that is copyable
 ### `useERC20balance()`
 
 💰 Gets all token balances of a current user or specified address.
-
+test
 **Options**:
 
 - `chain` (optional): The blockchain to get data from. Valid values are listed on the intro page in the Transactions and Balances section. Default value: current chain.
