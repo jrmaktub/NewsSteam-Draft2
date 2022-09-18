@@ -36,12 +36,15 @@ function MoralisDappProvider({children}) {
     //   {children}
     // </MoralisDappContext.Provider>
 
+    //change chain here
+    
     //USE THIS DURING PRODUCTION
     <MoralisDappContext.Provider value={{walletAddress, chainId: '0x1'}}>
       {children}
     </MoralisDappContext.Provider>
   );
 }
+
 
 function useMoralisDapp() {
   const context = React.useContext(MoralisDappContext);
