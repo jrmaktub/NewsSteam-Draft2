@@ -22,7 +22,7 @@ const HomeScreen = ({ route, navigation, ...props }) => {
         //itemData and item prop are provided by ReactN
 
         <SafeAreaView style={[StyleSheet.absoluteFill, styles.container]}>
-
+            <View style={styles.viewContainer}>
             <FlatList
                 data={articles}
                 keyExtractor={item => item.id}
@@ -39,6 +39,7 @@ const HomeScreen = ({ route, navigation, ...props }) => {
                     />
                 )}
             />
+            </View>
         </SafeAreaView>
 
 
@@ -61,7 +62,10 @@ const styles = StyleSheet.create({
     categoriesContainer: {
         marginTop: 20,
         height: 64
-    }
+    },
+    viewContainer: {
+        flex: 1,
+      },
 
 })
 
