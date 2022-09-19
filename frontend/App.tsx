@@ -17,6 +17,8 @@ import Profile from "./Components/Profile/Profile";
 import Header from "./Components/Header";
 import NFTAssets from "./Components/NFT/NFTAssets";
 
+import { View, Text, Button, StyleSheet, FlatList, Image, StatusBar } from 'react-native'
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faCreditCard,
@@ -28,6 +30,12 @@ import {
 
 import Moralis from "moralis/types";
 
+import FavoritesContextProvider from './store/context/favorites-context'
+
+import HomeScreen from './screens/HomeScreen'
+import { SafeAreaView } from "react-native-safe-area-context";
+
+
 LogBox.ignoreAllLogs();
 
 // const Activecolor =
@@ -38,16 +46,18 @@ function Home(): JSX.Element {
       activeColor="#315399"
       // inactiveColor="#3e2465"
       barStyle={{ backgroundColor: "white" }}>
+
       <Tab.Screen
-        name="Assets"
+        name="Articles"
         options={{
-          tabBarLabel: "Assets",
+          tabBarLabel: "Articles",
           tabBarIcon: ({ color, focused }) => {
             return <FontAwesomeIcon icon={faCoins} color={color} size={20} />;
           },
         }}
-        component={Assets}
+        component={HomeScreen}
       />
+
       <Tab.Screen
         name="Transactions"
         options={{
@@ -58,6 +68,7 @@ function Home(): JSX.Element {
         }}
         component={RecentTransactions}
       />
+
       <Tab.Screen
         name="NFTAssets"
         options={{
@@ -68,6 +79,7 @@ function Home(): JSX.Element {
         }}
         component={NFTAssets}
       />
+
       <Tab.Screen
         name="Transfer"
         options={{
@@ -102,8 +114,8 @@ function getHeaderTitle(route) {
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
 
   switch (routeName) {
-    case "Assets":
-      return "Assets";
+    case "Articles":
+      return "Articles";
     case "Transfer":
       return "Transfer";
     case "Transactions":
@@ -125,27 +137,38 @@ function App(): JSX.Element {
   } = useMoralis();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Auth">
-        {/* Auth Navigator: Include Login and Signup */}
-        <Stack.Screen
-          name="Auth"
-          component={CryptoAuth}
-          options={{ headerShown: false }}
-        />
-        {/* Navigation Drawer as a landing page */}
-        <Stack.Screen
-          name="DrawerNavigationRoutes"
-          component={Home}
-          // Hiding header for Navigation Drawer
-          options={{ headerTitle: (props) => <Header /> }}
+    //maybe remove this? Ask ETH mentor.
+    <SafeAreaView style={styles.container}>
+    <FavoritesContextProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Auth">
+          {/* Auth Navigator: Include Login and Signup */}
+          <Stack.Screen
+            name="Auth"
+            component={CryptoAuth}
+            options={{ headerShown: false }}
+          />
+          {/* Navigation Drawer as a landing page */}
+          <Stack.Screen
+            name="DrawerNavigationRoutes"
+            component={Home}
+            // Hiding header for Navigation Drawer
+            options={{ headerTitle: (props) => <Header /> }}
           // options={({ route }) => ({
           //   headerTitle: getHeaderTitle(route),
           // })}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </FavoritesContextProvider>
+    </SafeAreaView>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    
+    flex: 1
+  }
+})
 
 export default App;

@@ -27,9 +27,10 @@ const darks = {dark}
 /**
  * Initialization of Moralis
  */
-const appId = '9gfAJwp6q8uJuTTHtIMuEiOoXAGLlxeX7IAszRJh';
+const appId = 'WFhlK2uNcLX5WKDpQx2DVlIVLp0smvUxYEkClJrd';
 const serverUrl = 'https://pivnwf6cjq7d.usemoralis.com:2053/server';
 const environment = 'native';
+
 // Initialize Moralis with AsyncStorage to support react-native storage
 Moralis.setAsyncStorage(AsyncStorage);
 // Replace the enable function to use the react-native WalletConnect
@@ -65,7 +66,7 @@ export const Providers = ({children}: ProvidersProps) => {
         environment={environment}>
         <MoralisDappProvider>
           {/* <ApplicationProvider {...eva} theme={eva.dark}> */}
-          <ApplicationProvider {...eva} theme={eva.dark}>
+          <ApplicationProvider {...eva} theme={darks}>
             {children}
           </ApplicationProvider>
         </MoralisDappProvider>

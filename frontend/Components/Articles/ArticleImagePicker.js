@@ -3,15 +3,6 @@ import { View, Text, Button, StyleSheet, TextInput, Pressable, ImageBackground, 
 
 import { useState } from 'react'
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faCreditCard,
-  faCoins,
-  faUser,
-  faPaperPlane,
-  faRocket,
-} from "@fortawesome/free-solid-svg-icons";
-
 import Icon from 'react-native-vector-icons/Ionicons';
 
 

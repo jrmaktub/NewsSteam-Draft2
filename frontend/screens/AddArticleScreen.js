@@ -11,13 +11,10 @@ import { Dimensions } from 'react-native';
 
 let windowHeight = Dimensions.get('window').height;
 
-const AddArticleScreen = ({ navigation }) => {
+const AddArticleScreen = ({route, navigation, ...props }) => {
 
     const windowWidth = Dimensions.get('window').width;
    
-
-
-
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
 
