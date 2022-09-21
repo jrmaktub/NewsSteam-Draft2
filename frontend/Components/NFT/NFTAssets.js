@@ -14,6 +14,7 @@ const NFTAssets = () => {
   const {NFTBalance, isLoading} = useNFTBalance();
   const {chainId} = useMoralisDapp();
   const {Moralis} = useMoralis();
+  
   const Item = ({
     tokenAddress,
     image,

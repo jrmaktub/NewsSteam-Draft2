@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 
 import { View, Text, SafeAreaView, StyleSheet, Image, FlatList, ScrollView } from 'react-native'
 import { useLayoutEffect } from 'react'
@@ -8,8 +8,35 @@ import { color } from 'react-native-reanimated'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FavoritesContext } from '../store/context/favorites-context'
 import {ARTICLES} from '../data/articleFBData'
+import { text } from 'stream/consumers'
+import axios from 'axios'
+
+//moralis tutorial
+
+export const Url = "https://ipfs.io/ipfs";
 
 function ArticleDetailsScreen({ route, navigation, ...props }) {
+
+    //MT
+    const [title, setTitle] = useState("")
+    const [text, setText] = useState("")
+
+    const fetchBlogContent = async () => {
+        const res = await axios.get(`${Url}/${url}`);
+        setTitle(res.data.title);
+        const text = res.data.text.toString();
+        setText(text);
+    };
+
+    useEffect(() => {
+        if (!title || !text) {
+          fetchBlogContent();
+        }
+    }, [text, title]);
+
+
+
+    //MT end
     
     const favoriteArticlesCtx =  useContext(FavoritesContext);
 

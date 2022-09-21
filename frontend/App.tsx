@@ -33,6 +33,7 @@ import Moralis from "moralis/types";
 import FavoritesContextProvider from './store/context/favorites-context'
 
 import HomeScreen from './screens/HomeScreen'
+import ArticleDetailsScreen  from  './screens/ArticleDetailsScreen'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -158,6 +159,7 @@ function App(): JSX.Element {
           //   headerTitle: getHeaderTitle(route),
           // })}
           />
+        <Stack.Screen name="ArticleDetailsScreen" component={ArticleDetailsScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
     </FavoritesContextProvider>

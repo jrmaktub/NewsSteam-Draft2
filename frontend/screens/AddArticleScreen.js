@@ -11,12 +11,13 @@ import { Dimensions } from 'react-native';
 
 let windowHeight = Dimensions.get('window').height;
 
-const AddArticleScreen = ({route, navigation, ...props }) => {
+const AddArticleScreen = ({ route, navigation, ...props }) => {
 
     const windowWidth = Dimensions.get('window').width;
-   
+
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
+    const [date, setDate] = useState('')
 
     const [userId, setUserId] = useState('')
 
@@ -25,7 +26,7 @@ const AddArticleScreen = ({route, navigation, ...props }) => {
 
     const [image, setImage] = useState('')
 
-    
+
 
     const onAuthorChanged = e => setUserId(e.target.value)
 
@@ -92,7 +93,7 @@ const AddArticleScreen = ({route, navigation, ...props }) => {
         })
     }
 
-   
+
 
 
     return (
@@ -107,7 +108,12 @@ const AddArticleScreen = ({route, navigation, ...props }) => {
                 <View>
                     <Text style={{ color: 'white', marginTop: 20, textAlign: 'center', fontSize: 20, marginBottom: 20 }}>Headline Image</Text>
                     <ArticleImagePicker uri={image} onPress={() => setVisible(true)} />
-                    
+
+                </View>
+
+                {/* test */}
+                <View>
+                    <TextInput placeholder='YYYY-MM-DD' maxLength={10} onChangeText={setDate} />
                 </View>
 
                 <View >
@@ -152,7 +158,6 @@ const AddArticleScreen = ({route, navigation, ...props }) => {
                     <TextInput placeholder='Article Content' placeholderTextColor={'gray'} style={[styles.input, styles.inputMultiline]} onChangeText={setContent} value={content} selectionColor={'white'} inputStyle={{ color: 'red' }} multiline={true} />
                 </View>
 
-          
 
                 <View style={{ marginTop: 200, marginBottom: 100, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginHorizontal: 16 }} >
                     <TouchableOpacity style={{ minWidth: 140, minHeight: 40, padding: 10, backgroundColor: 'gray', borderRadius: 5 }} >

@@ -12,17 +12,19 @@ import {Platform} from 'react-native';
 import {MoralisDappProvider} from './providers/MoralisDappProvider/MoralisDappProvider';
 import {ApplicationProvider, Layout, Text} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
-import { mapping, light, dark } from '@eva-design/eva';
+import { mapping, dark } from '@eva-design/eva';
 import {
   REACT_APP_MORALIS_APPLICATION_ID,
   REACT_APP_MORALIS_SERVER_URL,
 } from '@env';
 
+import { default as theme } from './theme.json';
+
 interface ProvidersProps {
   readonly children: JSX.Element;
 }
 
-const darks = {dark}
+
 
 /**
  * Initialization of Moralis
@@ -66,7 +68,7 @@ export const Providers = ({children}: ProvidersProps) => {
         environment={environment}>
         <MoralisDappProvider>
           {/* <ApplicationProvider {...eva} theme={eva.dark}> */}
-          <ApplicationProvider {...eva} theme={darks}>
+          <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
             {children}
           </ApplicationProvider>
         </MoralisDappProvider>
