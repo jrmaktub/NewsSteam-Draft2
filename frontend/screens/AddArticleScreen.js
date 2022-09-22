@@ -31,10 +31,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
     //change to ceramic object
     const { isSaving, error, save } = useNewMoralisObject('Posts');
 
-
-
     const windowWidth = Dimensions.get('window').width;
-
 
     // const [userId, setUserId] = useState('')
 

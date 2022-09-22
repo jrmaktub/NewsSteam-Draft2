@@ -3,6 +3,14 @@ import { createContext, useReducer } from "react";
 
 import {ARTICLES} from '../data/articleFBData'
 
+// id, 
+// userId, 
+// title, 
+// featuredImageUrl, 
+// userName, 
+// dateWritten, 
+// content 
+
 //will be fetched with web3 api
 // const [blogs, setBlogs] = useState([
 //     {
@@ -13,10 +21,11 @@ import {ARTICLES} from '../data/articleFBData'
 
 export const ArticlesContext = createContext({
     articles: [],
-    addArticle: ({ title, image, date, content }) => { },
+    addArticle: ({ id, userId, title, featuredImageUrl,userName, dateWritten, content }) => { },
     setArticles: (articles)=> ({}),
     deleteArticle: (id) => { },
-    updateArticle: (id, { title, image, date, content }) => { }
+    //maybe add id?
+    updateArticle: (id, { userId, title, featuredImageUrl,userName, dateWritten, content }) => { }
 })
 
 function articleseReducer(state, action) {
