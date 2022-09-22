@@ -11,13 +11,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios'
 import { ScrollView } from 'react-native-gesture-handler';
 import { ArticlesContext } from '../store/context/articles-context';
+import { fetchArticles } from '../utils/http';
 
 const HomeScreen = ({ route, navigation, ...props }) => {
 
     //context starts here
     const articlesCtx = useContext(ArticlesContext)
 
-    const articles = ARTICLES
+    // const articles = ARTICLES
+
+    // const [fetchedArticles, setFetchedArticles]  = useState([])
+
+    //ceramic
+    useEffect( ()=>{
+        async function getArticles(){
+         const articles =  await fetchArticles();
+         articlesCtx.setArticles(articles)
+        //  setFetchedArticles(articles)
+        }
+
+        getArticles();
+        
+    }, []);
 
 
     // //will be fetched with web3 api

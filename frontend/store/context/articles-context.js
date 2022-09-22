@@ -12,8 +12,9 @@ import {ARTICLES} from '../data/articleFBData'
 // ])
 
 export const ArticlesContext = createContext({
-    articles: [ARTICLES],
+    articles: [],
     addArticle: ({ title, image, date, content }) => { },
+    setArticles: (articles)=> ({}),
     deleteArticle: (id) => { },
     updateArticle: (id, { title, image, date, content }) => { }
 })
@@ -21,8 +22,14 @@ export const ArticlesContext = createContext({
 function articleseReducer(state, action) {
     switch (action.type) {
         case 'ADD':
-            const id = new Date.toString + Math.random().toString
-            return [{ ...action.payload, id: id }, ...state]
+            //might implement this into user ID
+            // const id = new Date.toString + Math.random().toString
+            //firebase includes id
+            return [action.payload, ...state]
+
+        case 'SET':
+            const inverted = action.payload.reverse()
+            return inverted
 
         case 'UPDATE':
             const updatableArticleIndex = state.findIndex((article)=> article.id === action.payload.id);
@@ -43,10 +50,15 @@ function articleseReducer(state, action) {
 
 function ArticlesContextProvider({ children }) {
 
-    const [articlesState, dispatch] = useReducer(articleseReducer, ARTICLES);
+    // const [articlesState, dispatch] = useReducer(articleseReducer, ARTICLES);
+    const [articlesState, dispatch] = useReducer(articleseReducer, []);
 
     function addArticle(articleData) {
         dispatch({ type: 'ADD', payload: articleData })
+    }
+
+    function setArticles(articles){
+        dispatch({type: 'SET',  payload: articles})
     }
 
     function deleteArticle(id) {
@@ -59,6 +71,7 @@ function ArticlesContextProvider({ children }) {
 
     const value ={
         articles: articlesState,
+        setArticles: setArticles,
         addArticle: addArticle,
         deleteArticle: deleteArticle,
         updateArticle: updateArticle

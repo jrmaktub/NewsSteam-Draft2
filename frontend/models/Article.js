@@ -6,11 +6,8 @@ class Article {
         featuredImageUrl, 
         userName, 
         dateWritten, 
-        content, 
-        categoryIds, 
-        description, 
-        likes, 
-        comments 
+        content 
+
         ) 
         
         {
@@ -20,12 +17,9 @@ class Article {
         this.featuredImageUrl = featuredImageUrl,
         this.userName =  userName, 
         this.dateWritten = dateWritten
-        this.content = content,
-        this.categoryIds = categoryIds,
-        this.description = description,
-        this.likes  = likes,
-        this.comments = comments
-    }
+        this.content = content
+
+        }
 }
 
 export default Article;

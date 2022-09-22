@@ -7,50 +7,51 @@ import { useCallback } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dimensions } from 'react-native';
 import { ArticlesContext } from '../store/context/articles-context'
+import { useMoralis, useNewMoralisObject, useMoralisQuery, useMoralisFile } from "react-moralis";
+
+import { storeArticle } from '../utils/http';
 
 
 const AddArticleScreen = ({ route, navigation, ...props }) => {
 
     const articlesCtx = useContext(ArticlesContext)
 
-    // const articles = ARTICLES
+    const [title, setTitle] = useState('')
+    const [content, setContent] = useState('')
+    //check with mentor
+    const [dateWritten, setDate] = useState('')
 
-    //onestate
-    const [inputValues, setInputValues] = useState({
-        title: '',
-        image: image,
-        date: '',
-        content: '',
+    //change this to article
+    // const [meme, setMeme] = useState();
+    const [memeBase64, setMemeBase64] = useState();
+    const { Moralis } = useMoralis();
+    const { data } = useMoralisQuery("User");
+    const currentUserId = String(data.map((data) => data.id));
+    const { walletAddress, chainId } = useMoralisDapp();
+    //change to ceramic object
+    const { isSaving, error, save } = useNewMoralisObject('Posts');
 
-    })
 
-    function inputChangedHandler(inputIdentifier, enteredValue) {
-        setInputValues((curInputValues) => {
-            return {
-                ...curInputValues,
-                [inputIdentifier]: enteredValue
-            }
-        })
-    }
 
     const windowWidth = Dimensions.get('window').width;
 
-    // const [title, setTitle] = useState('')
-    // const [content, setContent] = useState('')
-    // const [date, setDate] = useState('')
 
     // const [userId, setUserId] = useState('')
 
     const [pickerResponse, setPickerResponse] = useState(null)
     const [visible, setVisible] = useState(false)
 
-    const [image, setImage] = useState('')
+    const [featuredImageUrl, setImage] = useState('')
 
     function titleChangedHandler(enteredTitle) {
         setTitle(enteredTitle)
     }
 
-    const onAuthorChanged = e => setUserId(e.target.value)
+    function contentChangedHandler(enteredContent) {
+        setContent(enteredContent)
+    }
+
+
 
     const onImageLibraryPress = () => {
         const options = {
@@ -66,6 +67,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
             }
         }
 
+        //maybe ImagePicker.launchImageLibrary
         launchImageLibrary(options, response => {
             if (response.errorCode) {
                 console.log(response.errorMessage)
@@ -117,22 +119,57 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
     }
 
     function submitHandler() {
+        //add article properties here
         const articleData = {
-            title: inputValues.title,
-            image: inputValues.image,
-            date: new Date(inputValues.date),
-            content: inputValues.content
+            //check id ask mentor
+            id: key,
+            userId: currentUserId,
+            title: title,
+            image: featuredImageUrl,
+            userName: walletAddress,
+            dateWritten: new Date(date),
+            content: content
         }
         confirmHandler(articleData)
+        postArticle()
     }
 
-    function confirmHandler(articleData) {
-        articlesCtx.addArticle(articleData)
+    async function confirmHandler(articleData) {
+        //ceramic here
+        const id = await storeArticle(articleData)
+        articlesCtx.addArticle({ ...articleData, id })
+
         navigation.goBack()
 
+
     }
 
+    //  id, 
+    // userId, 
+    // title, 
+    // featuredImageUrl, 
+    // userName, 
+    // dateWritten, 
+    // content  
 
+    //IPFS
+    const postArticle = async () => {
+        //change article to image
+        const data = featuredImageUrl.assets.map((data) => data)
+        const fileName = encodeURI(data.map((res) => res.fileName));
+        const media = new Moralis.File(fileName, { base64: String(memeBase64) });
+        await media.saveIPFS();
+
+        save({
+            'id': id,
+            'userId': currentUserId,
+            'title': title,
+            'featuredImageUrl': media._ipfs,
+            'userName': walletAddress,
+            'dateWritten': dateWritten,
+            'content': content
+        });
+    }
 
 
     return (
@@ -146,8 +183,8 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                         placeholder='Title'
                         placeholderTextColor={'gray'}
                         style={styles.input}
-                        onChangeText={inputChangedHandler.bind(this, 'title')}
-                        value={inputValues.title}
+                        onChangeText={titleChangedHandler}
+                        value={title}
                         selectionColor={'white'}
                         inputStyle={{ color: 'red' }}
 
@@ -159,7 +196,8 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                 <View>
                     <Text style={{ color: 'white', marginTop: 20, textAlign: 'center', fontSize: 20, marginBottom: 20 }}>Headline Image</Text>
                     <ArticleImagePicker
-                        uri={image}
+                        //revise this
+                        uri={featuredImageUrl}
                         onPress={() => setVisible(true)} />
                 </View>
 
@@ -168,8 +206,9 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                     <TextInput
                         placeholder='YYYY-MM-DD'
                         maxLength={10}
-                        onChangeText={inputChangedHandler.bind(this, 'date')}
-                        value={inputValues.date}
+                        //revise this
+                        onChangeText={setDate}
+                        value={dateWritten}
                     />
                 </View>
 
@@ -179,8 +218,8 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                         placeholder='Article Content'
                         placeholderTextColor={'gray'}
                         style={[styles.input, styles.inputMultiline]}
-                        onChangeText={inputChangedHandler.bind(this, 'content')}
-                        value={inputValues.content}
+                        onChangeText={contentChangedHandler}
+                        value={content}
                         selectionColor={'white'}
                         inputStyle={{ color: 'red' }}
                         multiline={true} />
@@ -234,8 +273,6 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
 
                     </Modal>
                 </View>
-
-
 
 
 
