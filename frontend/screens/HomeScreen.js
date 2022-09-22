@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import { View, Text, Button, StyleSheet, FlatList, Image, StatusBar } from 'react-native'
 
@@ -10,49 +10,54 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios'
 import { ScrollView } from 'react-native-gesture-handler';
+import { ArticlesContext } from '../store/context/articles-context';
 
 const HomeScreen = ({ route, navigation, ...props }) => {
+
+    //context starts here
+    const articlesCtx = useContext(ArticlesContext)
 
     const articles = ARTICLES
 
 
-    //will be fetched with web3 api
-    const [blogs, setBlogs] = useState([
-        {
-            externalUrl: "https://ipfs.io/ipfs/Qmd7DuscoYu3bqBavGxcxvoR1yZDhp8B4sNncyorZphucM",
-            author_of: "xxxx"
-        }
-    ])
-    //will use axios to fetch token URI and title and blog post itself and store it
-    const [blogsContent, setBlogsContent] = useState()
+    // //will be fetched with web3 api
+    // const [blogs, setBlogs] = useState([
+    //     {
+    //         externalUrl: "https://ipfs.io/ipfs/Qmd7DuscoYu3bqBavGxcxvoR1yZDhp8B4sNncyorZphucM",
+    //         author_of: "xxxx"
+    //     }
+    // ])
 
-    const fetchArticlesContent = async () => {
+    // //will use axios to fetch token URI and title and blog post itself and store it
+    // const [blogsContent, setBlogsContent] = useState()
 
-        const limit7 = blogs?.slice(0, 7);
-        let contentBlog = [];
+    // const fetchArticlesContent = async () => {
 
-        if (limit7) {
-            limit7.map(async (blog) => {
-                if (blog) {
-                    const { externalUrl, author_of } = blog;
-                    const res = await axios.get(externalUrl);
-                    const text = res.data.text.toString();
-                    const title = res.data.title;
-                    contentBlog.push({ title, text, author_of, externalUrl });
-                }
-            })
-        }
+    //     const limit7 = blogs?.slice(0, 7);
+    //     let contentBlog = [];
 
-        setBlogsContent(contentBlog)
-    };
+    //     if (limit7) {
+    //         limit7.map(async (blog) => {
+    //             if (blog) {
+    //                 const { externalUrl, author_of } = blog;
+    //                 const res = await axios.get(externalUrl);
+    //                 const text = res.data.text.toString();
+    //                 const title = res.data.title;
+    //                 contentBlog.push({ title, text, author_of, externalUrl });
+    //             }
+    //         })
+    //     }
 
-    useEffect(() => {
-        if (blogs && !blogsContent) {
-            fetchArticlesContent
-        }
-    }, []);
+    //     setBlogsContent(contentBlog)
+    // };
 
+    // useEffect(() => {
+    //     if (blogs && !blogsContent) {
+    //         fetchArticlesContent
+    //     }
+    // }, []);
 
+    
 
     return (
 
@@ -61,8 +66,10 @@ const HomeScreen = ({ route, navigation, ...props }) => {
 
         <SafeAreaView style={[StyleSheet.absoluteFill, styles.container]}>
             <View style={styles.viewContainer}>
-                {/* <FlatList
-                    data={articles}
+
+                <FlatList
+                    data = {articlesCtx.articles}
+                    // data={articles}
                     keyExtractor={item => item.id}
                     renderItem={itemData => (
 
@@ -77,15 +84,15 @@ const HomeScreen = ({ route, navigation, ...props }) => {
                             onMoreOptions={() => { }}
                         />
                     )}
-                /> */}
+                />
 
-                <ScrollView>
+                {/* <ScrollView>
                     {blogsContent &&
                         blogsContent.map((blog, i) => {
-                            const { title, text, author_of, externalUrl } = blog
+                            const { title, text, author_of, externalUrl, id } = blog
                             return (
                                 <ArticleItem
-                                    key={i}
+                                    key={id}
                                     id={key}
                                     title={title}
                                     userName={author_of}
@@ -97,7 +104,7 @@ const HomeScreen = ({ route, navigation, ...props }) => {
                         })
 
                     }
-                </ScrollView>
+                </ScrollView> */}
 
             </View>
         </SafeAreaView>

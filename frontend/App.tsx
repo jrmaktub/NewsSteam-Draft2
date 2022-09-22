@@ -35,6 +35,7 @@ import FavoritesContextProvider from './store/context/favorites-context'
 import HomeScreen from './screens/HomeScreen'
 import ArticleDetailsScreen  from  './screens/ArticleDetailsScreen'
 import { SafeAreaView } from "react-native-safe-area-context";
+import ArticlesContextProvider from './store/context/articles-context'
 
 
 LogBox.ignoreAllLogs();
@@ -140,6 +141,7 @@ function App(): JSX.Element {
   return (
     //maybe remove this? Ask ETH mentor.
     <SafeAreaView style={styles.container}>
+    <ArticlesContextProvider>
     <FavoritesContextProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Auth">
@@ -163,6 +165,7 @@ function App(): JSX.Element {
         </Stack.Navigator>
       </NavigationContainer>
     </FavoritesContextProvider>
+    </ArticlesContextProvider>
     </SafeAreaView>
   );
 }

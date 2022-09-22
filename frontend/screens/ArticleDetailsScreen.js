@@ -17,6 +17,8 @@ export const Url = "https://ipfs.io/ipfs";
 
 function ArticleDetailsScreen({ route, navigation, ...props }) {
 
+    const articleId = route.params.articleId
+
     //MT
     const [title, setTitle] = useState("")
     const [text, setText] = useState("")
@@ -37,10 +39,9 @@ function ArticleDetailsScreen({ route, navigation, ...props }) {
 
 
     //MT end
-    
+
     const favoriteArticlesCtx =  useContext(FavoritesContext);
 
-    const articleId = route.params.articleId
 
     const selectedArticle = ARTICLES.find((article) => article.id === articleId)
     

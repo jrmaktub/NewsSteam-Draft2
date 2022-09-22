@@ -6,27 +6,49 @@ import ArticleImagePicker from '../components/Articles/ArticleImagePicker'
 import { useCallback } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dimensions } from 'react-native';
+import { ArticlesContext } from '../store/context/articles-context'
 
-
-
-let windowHeight = Dimensions.get('window').height;
 
 const AddArticleScreen = ({ route, navigation, ...props }) => {
 
+    const articlesCtx = useContext(ArticlesContext)
+
+    // const articles = ARTICLES
+
+    //onestate
+    const [inputValues, setInputValues] = useState({
+        title: '',
+        image: image,
+        date: '',
+        content: '',
+
+    })
+
+    function inputChangedHandler(inputIdentifier, enteredValue) {
+        setInputValues((curInputValues) => {
+            return {
+                ...curInputValues,
+                [inputIdentifier]: enteredValue
+            }
+        })
+    }
+
     const windowWidth = Dimensions.get('window').width;
 
-    const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
-    const [date, setDate] = useState('')
+    // const [title, setTitle] = useState('')
+    // const [content, setContent] = useState('')
+    // const [date, setDate] = useState('')
 
-    const [userId, setUserId] = useState('')
+    // const [userId, setUserId] = useState('')
 
     const [pickerResponse, setPickerResponse] = useState(null)
     const [visible, setVisible] = useState(false)
 
     const [image, setImage] = useState('')
 
-
+    function titleChangedHandler(enteredTitle) {
+        setTitle(enteredTitle)
+    }
 
     const onAuthorChanged = e => setUserId(e.target.value)
 
@@ -52,6 +74,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
             } else {
                 const path = response.assets[0].uri
                 setImage(path)
+                // inputChangedHandler.bind(path, 'image')
                 setVisible(false)
             }
         })
@@ -93,29 +116,88 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
         })
     }
 
+    function submitHandler() {
+        const articleData = {
+            title: inputValues.title,
+            image: inputValues.image,
+            date: new Date(inputValues.date),
+            content: inputValues.content
+        }
+        confirmHandler(articleData)
+    }
+
+    function confirmHandler(articleData) {
+        articlesCtx.addArticle(articleData)
+        navigation.goBack()
+
+    }
+
 
 
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
+
                 {/* <form> */}
                 <View>
                     <Text style={styles.text}>Title</Text>
-                    <TextInput placeholder='Title' placeholderTextColor={'gray'} style={styles.input} onChangeText={setTitle} value={title} selectionColor={'white'} inputStyle={{ color: 'red' }} />
+                    <TextInput
+                        placeholder='Title'
+                        placeholderTextColor={'gray'}
+                        style={styles.input}
+                        onChangeText={inputChangedHandler.bind(this, 'title')}
+                        value={inputValues.title}
+                        selectionColor={'white'}
+                        inputStyle={{ color: 'red' }}
+
+                    />
+
                 </View>
 
+                {/* image */}
                 <View>
                     <Text style={{ color: 'white', marginTop: 20, textAlign: 'center', fontSize: 20, marginBottom: 20 }}>Headline Image</Text>
-                    <ArticleImagePicker uri={image} onPress={() => setVisible(true)} />
-
+                    <ArticleImagePicker
+                        uri={image}
+                        onPress={() => setVisible(true)} />
                 </View>
 
-                {/* test */}
+                {/* date*/}
                 <View>
-                    <TextInput placeholder='YYYY-MM-DD' maxLength={10} onChangeText={setDate} />
+                    <TextInput
+                        placeholder='YYYY-MM-DD'
+                        maxLength={10}
+                        onChangeText={inputChangedHandler.bind(this, 'date')}
+                        value={inputValues.date}
+                    />
                 </View>
 
+                <View>
+                    <Text style={styles.text}>Article Content</Text>
+                    <TextInput
+                        placeholder='Article Content'
+                        placeholderTextColor={'gray'}
+                        style={[styles.input, styles.inputMultiline]}
+                        onChangeText={inputChangedHandler.bind(this, 'content')}
+                        value={inputValues.content}
+                        selectionColor={'white'}
+                        inputStyle={{ color: 'red' }}
+                        multiline={true} />
+                </View>
+
+                {/* buttons */}
+                <View style={{ marginTop: 200, marginBottom: 100, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginHorizontal: 16 }} >
+                    <TouchableOpacity onPress={''} style={{ minWidth: 140, minHeight: 40, padding: 10, backgroundColor: 'gray', borderRadius: 5 }} >
+                        <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>Draft</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={submitHandler} style={{ minWidth: 140, minHeight: 40, padding: 10, backgroundColor: 'white', borderRadius: 5 }}  >
+                        <Text style={{ color: 'black', textAlign: 'center', fontSize: 16 }}>Post</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {/* modal */}
                 <View >
                     <Modal
                         visible={visible}
@@ -153,21 +235,10 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                     </Modal>
                 </View>
 
-                <View>
-                    <Text style={styles.text}>Article Content</Text>
-                    <TextInput placeholder='Article Content' placeholderTextColor={'gray'} style={[styles.input, styles.inputMultiline]} onChangeText={setContent} value={content} selectionColor={'white'} inputStyle={{ color: 'red' }} multiline={true} />
-                </View>
 
 
-                <View style={{ marginTop: 200, marginBottom: 100, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginHorizontal: 16 }} >
-                    <TouchableOpacity style={{ minWidth: 140, minHeight: 40, padding: 10, backgroundColor: 'gray', borderRadius: 5 }} >
-                        <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>Draft</Text>
-                    </TouchableOpacity>
 
-                    <TouchableOpacity onPress={onSaveArticleClicked} style={{ minWidth: 140, minHeight: 40, padding: 10, backgroundColor: 'white', borderRadius: 5 }}  >
-                        <Text style={{ color: 'black', textAlign: 'center', fontSize: 16 }}>Post</Text>
-                    </TouchableOpacity>
-                </View>
+
 
             </ScrollView>
 

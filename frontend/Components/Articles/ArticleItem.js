@@ -19,7 +19,6 @@ const ArticleItem = ({ text, title, userName, externalUrl, route, navigation, ..
         const lastSegment = externalUrl.split("/").pop();
         navigation.navigate('ArticleDetailsScreen', {
             articleId: props.id,
-            lastSegment
         })
     }
 
@@ -39,8 +38,8 @@ const ArticleItem = ({ text, title, userName, externalUrl, route, navigation, ..
                     <View style={styles.innerContainer}>
 
                         <View style={styles.imageContainer}>
-                            <Image style={styles.image} source={{ uri: 'https://ipfs.io/ipfs/QmWEsG4ayh75BMk2H1CowAdALPjsi3fD7CSZ6qxNM1yNnz/image/moralis.png' }} />
-                            {/* <Image style={styles.image} source={{ uri: props.image }} /> */}
+                            {/* <Image style={styles.image} source={{ uri: 'https://ipfs.io/ipfs/QmWEsG4ayh75BMk2H1CowAdALPjsi3fD7CSZ6qxNM1yNnz/image/moralis.png' }} /> */}
+                            <Image style={styles.image} source={{ uri: props.image }} />
                         </View>
 
 
