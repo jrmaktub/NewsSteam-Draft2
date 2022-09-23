@@ -2,21 +2,22 @@ import React from 'react'
 import { View, Text, Image, StyleSheet, Button, Pressable, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { useMoralis } from "react-moralis";
 
 const ArticleItem = ({ text, title, userName, externalUrl, route, ...props }) => {
     //medium tutorial
-    const length = 100;
-    const trimmedString = text.length > 100 ?
-        text.substring(0, length) :
-        text;
+    // const length = 100;
+    // const trimmedString = text.length > 100 ?
+    //     text.substring(0, length) :
+    //     text;
 
-    const account = `${userName.slice(0, 4)}...${userName.slice(38)}`;
+    // const account = `${userName.slice(0, 4)}...${userName.slice(38)}`;
+
+
 
     const navigation = useNavigation()
 
     function selectedArticleHandler() {
-        //takes last segment of the url
-        const lastSegment = externalUrl.split("/").pop();
         navigation.navigate('ArticleDetailsScreen', {
             articleId: props.id,
         })
@@ -44,11 +45,11 @@ const ArticleItem = ({ text, title, userName, externalUrl, route, ...props }) =>
 
 
                         <View style={styles.titleContainer} >
-                            <Text numberOfLines={3} style={styles.title}>{props.title}</Text>
+                            <Text numberOfLines={3} style={styles.title}>{title}</Text>
 
                             <View style={styles.headingContainer} >
                                 {/* insert ENS here baby */}
-                                <Text style={styles.userName}>{props.userName}</Text>
+                                <Text style={styles.userName}>{userName}</Text>
                                 {/* <Text style={styles.dateStyle}>{props.dateWritten}</Text> */}
                             </View>
                         </View>

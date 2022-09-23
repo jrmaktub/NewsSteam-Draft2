@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef  } from 'react'
 
 import { View, Text, Button, StyleSheet, FlatList, Image, StatusBar } from 'react-native'
 
 import ArticleItem from '../Components/Articles/ArticleItem'
 
 import { ARTICLES } from '../data/articleFBData'
-
+import { useMoralis } from "react-moralis";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios'
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'black',
         marginTop: StatusBar.currentHeight || 0,
-        marginBottom: 72,
+        // marginBottom: 72,
 
     },
     categoriesContainer: {

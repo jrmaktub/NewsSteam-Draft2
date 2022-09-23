@@ -1,11 +1,12 @@
 import React from 'react'
 import { View, ScrollView, Text, Button, StyleSheet, TextInput, Pressable, SafeAreaView, Modal, TouchableOpacity } from 'react-native'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ArticleImagePicker from '../Components/Articles/ArticleImagePicker'
 import { useCallback } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dimensions } from 'react-native';
+import { useMoralisDapp } from '../providers/MoralisDappProvider/MoralisDappProvider'
 import { ArticlesContext } from '../store/context/articles-context'
 import { useMoralis, useNewMoralisObject, useMoralisQuery, useMoralisFile } from "react-moralis";
 // import * as ImagePicker from 'react-native-image-picker';
@@ -15,16 +16,20 @@ const windowWidth = Dimensions.get('window').width;
 
 export function getFormattedDate(date) {
     return date.toISOString().slice(0, 10);
-  }
+}
 
 const AddArticleScreen = ({ route, navigation, ...props }) => {
 
     const articlesCtx = useContext(ArticlesContext)
 
     const [title, setTitle] = useState('')
+    const [featuredImageUrl, setFeaturedImageUrl] = useState('')
+    const [featuredImage, setFeaturedImage] = useState('')
+    const [articleBase64, setArticleBase64] = useState();
+
     const [content, setContent] = useState('')
     const [dateWritten, setDate] = useState('')
-    const [memeBase64, setMemeBase64] = useState();
+
     const { Moralis } = useMoralis();
     const { data } = useMoralisQuery("User");
     const currentUserId = String(data.map((data) => data.id));
@@ -33,8 +38,8 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
     const [pickerResponse, setPickerResponse] = useState(null)
     const [visible, setVisible] = useState(false)
 
-    const [featuredImageUrl, setFeaturedImageUrl] = useState('')
-    const [featuredImage, setFeaturedImage] = useState('')
+
+
 
     function titleChangedHandler(enteredTitle) {
         setTitle(enteredTitle)
@@ -44,16 +49,18 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
         setContent(enteredContent)
     }
 
-    function dateChangedHandler(enteredDate){
+    function dateChangedHandler(enteredDate) {
         let formatedDate = getFormattedDate(enteredDate)
         setDate(formatedDate)
     }
 
     const onImageLibraryPress = () => {
+
         const options = {
             selectionLimit: 1,
             mediaType: 'mixed',
-            includeBase64: false,
+            //maybe change this
+            includeBase64: true,
             width: 150,
             height: 150,
 
@@ -73,7 +80,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                 // const path = response.assets[0].uri
                 const stringUri = String(response.assets.map((data) => data.uri))
                 setFeaturedImageUrl(stringUri)
-                setMemeBase64(response.assets.map(data => data.base64))
+                setArticleBase64(response.assets.map(data => data.base64))
                 setFeaturedImage(response)
                 // setArticle(response)
 
@@ -149,7 +156,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
         //change article to image
         const data = featuredImage.assets.map((data) => data)
         const fileName = encodeURI(data.map((res) => res.fileName));
-        const media = new Moralis.File(fileName, { base64: String(memeBase64) });
+        const media = new Moralis.File(fileName, { base64: String(articleBase64) });
         await media.saveIPFS();
 
         save({
@@ -223,7 +230,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                         <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>Draft</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={submitHandler} style={{ minWidth: 140, minHeight: 40, padding: 10, backgroundColor: 'white', borderRadius: 5 }}  >
+                    <TouchableOpacity onPress={() => postArticle()} style={{ minWidth: 140, minHeight: 40, padding: 10, backgroundColor: 'white', borderRadius: 5 }}  >
                         <Text style={{ color: 'black', textAlign: 'center', fontSize: 16 }}>Post</Text>
                     </TouchableOpacity>
                 </View>
@@ -283,7 +290,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        marginBottom: 20
+        // marginBottom: 20
     },
     text: {
         color: 'white',

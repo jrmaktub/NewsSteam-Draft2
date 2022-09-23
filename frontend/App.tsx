@@ -14,7 +14,7 @@ import RecentTransactions from "./Components/RecentTransactions/RecentTransactio
 import Assets from "./Components/Assets/Assets";
 import Transfer from "./Components/Transfer/Transfer";
 import Profile from "./Components/Profile/Profile";
-import Header from "./Components/Header";
+// import Header from "./Components/Header";
 import NFTAssets from "./Components/NFT/NFTAssets";
 
 import { View, Text, Button, StyleSheet, FlatList, Image, StatusBar } from 'react-native'
@@ -157,11 +157,11 @@ function App(): JSX.Element {
           <Stack.Screen
             name="DrawerNavigationRoutes"
             component={Home}
-            // Hiding header for Navigation Drawer
-            options={{ headerTitle: (props) => <Header /> }}
-          // options={({ route }) => ({
-          //   headerTitle: getHeaderTitle(route),
-          // })}
+            //  Hiding header for Navigation Drawer
+             options={{ headerTitle: (props) => <Header /> }}
+           options={({ route }) => ({
+            headerTitle: getHeaderTitle(route),
+           })}
           />
         <Stack.Screen name="ArticleDetailsScreen" component={ArticleDetailsScreen}/>
         <Stack.Screen name="AddArticleScreen" component={AddArticleScreen}/>

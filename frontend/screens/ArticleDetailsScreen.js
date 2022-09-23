@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useRef  } from 'react'
 
 import { View, Text, SafeAreaView, StyleSheet, Image, FlatList, ScrollView } from 'react-native'
 import { useLayoutEffect } from 'react'
@@ -10,6 +10,7 @@ import { FavoritesContext } from '../store/context/favorites-context'
 import {ARTICLES} from '../data/articleFBData'
 import { text } from 'stream/consumers'
 import axios from 'axios'
+import { useMoralis } from "react-moralis";
 
 //moralis tutorial
 
@@ -17,35 +18,51 @@ export const Url = "https://ipfs.io/ipfs";
 
 function ArticleDetailsScreen({ route, navigation, ...props }) {
 
-    const articleId = route.params.articleId
+    
 
-    //MT
-    const [title, setTitle] = useState("")
-    const [text, setText] = useState("")
+    const { Moralis } = useMoralis();
+    const [updated, setUpdated] = useState(false);
+    const [articles, setArticles] = useState();
+    const flatListRef = useRef();
 
-    const fetchBlogContent = async () => {
-        const res = await axios.get(`${Url}/${url}`);
-        setTitle(res.data.title);
-        const text = res.data.text.toString();
-        setText(text);
-    };
+    const getAllArticles = async () => {
+        const posts = await Moralis.Cloud.run("getAllArticles");
+        setArticles(posts)
+    }
+
+    const subscribeToPosts = async () => {
+        //ask tutor
+        let query = new Moralis.Query('Posts');
+        let subscription = await query.subscribe();
+        subscription.on('create', notifyOnCreate);
+    }
+
+    const notifyOnCreate = (result) => {
+        setUpdated(result)
+    }
 
     useEffect(() => {
-        if (!title || !text) {
-          fetchBlogContent();
-        }
-    }, [text, title]);
+        getAllArticles();
+        //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
+    }, [updated])
+
+    useEffect(() => {
+        subscribeToPosts()
+    }, [updated])
+
+    const articleId = route.params.articleId
+
 
 
 
     //MT end
 
-    const favoriteArticlesCtx =  useContext(FavoritesContext);
+    // const favoriteArticlesCtx =  useContext(FavoritesContext);
 
 
-    const selectedArticle = ARTICLES.find((article) => article.id === articleId)
+    const selectedArticle = articles.find((article) => article.id === articleId)
     
-    const articleIsFavorite = favoriteArticlesCtx.ids.includes(articleId)
+    // const articleIsFavorite = favoriteArticlesCtx.ids.includes(articleId)
     
 
     function changeFavoriteStatusHandler(){
