@@ -165,7 +165,7 @@ function App(): JSX.Element {
           />
         <Stack.Screen name="ArticleDetailsScreen" component={ArticleDetailsScreen}/>
         <Stack.Screen name="AddArticleScreen" component={AddArticleScreen}/>
-        
+
         </Stack.Navigator>
       </NavigationContainer>
     </FavoritesContextProvider>
@@ -173,11 +173,12 @@ function App(): JSX.Element {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     
     flex: 1
   }
 })
-
+//moralis-admin-cli watch-cloud-folder --moralisApiKey ug59Tc1C1ASUDLZ --moralisApiSecret 5l6Dobz1BWQ2AeP --moralisSubdomain pivnwf6cjq7d.usemoralis.com --autoSave 1 --moralisCloudfolder /Users/jorgeramirez/Downloads/NewsStream/moralis-cloud-functions
 export default App;

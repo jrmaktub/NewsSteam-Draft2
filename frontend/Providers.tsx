@@ -18,7 +18,7 @@ import {
   REACT_APP_MORALIS_SERVER_URL,
 } from '@env';
 
-import { default as theme } from './theme.json';
+// import { default as theme } from './theme.json';
 
 interface ProvidersProps {
   readonly children: JSX.Element;

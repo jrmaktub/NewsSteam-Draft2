@@ -2,7 +2,7 @@ import React from 'react'
 import { View, ScrollView, Text, Button, StyleSheet, TextInput, Pressable, SafeAreaView, Modal, TouchableOpacity } from 'react-native'
 import { useState } from 'react'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import ArticleImagePicker from '../components/Articles/ArticleImagePicker'
+import ArticleImagePicker from '../Components/Articles/ArticleImagePicker'
 import { useCallback } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dimensions } from 'react-native';

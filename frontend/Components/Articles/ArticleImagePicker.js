@@ -95,4 +95,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default ArticleImagePicker
+export default ArticleImagePicker;

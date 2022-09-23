@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, Button, Pressable, TouchableOpacity } fr
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-const ArticleItem = ({ text, title, userName, externalUrl, route, navigation, ...props }) => {
+const ArticleItem = ({ text, title, userName, externalUrl, route, ...props }) => {
     //medium tutorial
     const length = 100;
     const trimmedString = text.length > 100 ?
@@ -52,7 +52,7 @@ const ArticleItem = ({ text, title, userName, externalUrl, route, navigation, ..
                                 {/* <Text style={styles.dateStyle}>{props.dateWritten}</Text> */}
                             </View>
                         </View>
-                        
+
                     </View>
 
 
