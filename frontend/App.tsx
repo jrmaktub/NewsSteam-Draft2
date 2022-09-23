@@ -33,7 +33,9 @@ import Moralis from "moralis/types";
 import FavoritesContextProvider from './store/context/favorites-context'
 
 import HomeScreen from './screens/HomeScreen'
+import AddArticleScreen from './screens/AddArticleScreen'
 import ArticleDetailsScreen  from  './screens/ArticleDetailsScreen'
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import ArticlesContextProvider from './store/context/articles-context'
 
@@ -47,7 +49,7 @@ function Home(): JSX.Element {
       shifting={false}
       activeColor="#315399"
       // inactiveColor="#3e2465"
-      barStyle={{ backgroundColor: "white" }}>
+      barStyle={{ backgroundColor: "black" }}>
 
       <Tab.Screen
         name="Articles"
@@ -61,14 +63,14 @@ function Home(): JSX.Element {
       />
 
       <Tab.Screen
-        name="Transactions"
+        name="Create"
         options={{
-          tabBarLabel: "Transactions",
+          tabBarLabel: "Create",
           tabBarIcon: ({ color }) => (
             <FontAwesomeIcon icon={faCreditCard} color={color} size={20} />
           ),
         }}
-        component={RecentTransactions}
+        component={AddArticleScreen}
       />
 
       <Tab.Screen
@@ -118,8 +120,8 @@ function getHeaderTitle(route) {
   switch (routeName) {
     case "Articles":
       return "Articles";
-    case "Transfer":
-      return "Transfer";
+    case "Create":
+      return "Create";
     case "Transactions":
       return "Transactions";
     case "Profile":
@@ -162,6 +164,8 @@ function App(): JSX.Element {
           // })}
           />
         <Stack.Screen name="ArticleDetailsScreen" component={ArticleDetailsScreen}/>
+        <Stack.Screen name="AddArticleScreen" component={AddArticleScreen}/>
+        
         </Stack.Navigator>
       </NavigationContainer>
     </FavoritesContextProvider>
