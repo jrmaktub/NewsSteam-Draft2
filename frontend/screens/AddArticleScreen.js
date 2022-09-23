@@ -8,9 +8,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Dimensions } from 'react-native';
 import { ArticlesContext } from '../store/context/articles-context'
 import { useMoralis, useNewMoralisObject, useMoralisQuery, useMoralisFile } from "react-moralis";
-
+// import * as ImagePicker from 'react-native-image-picker';
 import { storeArticle } from '../utils/http';
 
+const windowWidth = Dimensions.get('window').width;
+
+export function getFormattedDate(date) {
+    return date.toISOString().slice(0, 10);
+  }
 
 const AddArticleScreen = ({ route, navigation, ...props }) => {
 
@@ -18,27 +23,18 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
 
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
-    //check with mentor
     const [dateWritten, setDate] = useState('')
-
-    //change this to article
-    // const [meme, setMeme] = useState();
     const [memeBase64, setMemeBase64] = useState();
     const { Moralis } = useMoralis();
     const { data } = useMoralisQuery("User");
     const currentUserId = String(data.map((data) => data.id));
     const { walletAddress, chainId } = useMoralisDapp();
-    //change to ceramic object
     const { isSaving, error, save } = useNewMoralisObject('Posts');
-
-    const windowWidth = Dimensions.get('window').width;
-
-    // const [userId, setUserId] = useState('')
-
     const [pickerResponse, setPickerResponse] = useState(null)
     const [visible, setVisible] = useState(false)
 
-    const [featuredImageUrl, setImage] = useState('')
+    const [featuredImageUrl, setFeaturedImageUrl] = useState('')
+    const [featuredImage, setFeaturedImage] = useState('')
 
     function titleChangedHandler(enteredTitle) {
         setTitle(enteredTitle)
@@ -48,7 +44,10 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
         setContent(enteredContent)
     }
 
-
+    function dateChangedHandler(enteredDate){
+        let formatedDate = getFormattedDate(enteredDate)
+        setDate(formatedDate)
+    }
 
     const onImageLibraryPress = () => {
         const options = {
@@ -71,9 +70,13 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
             } else if (response.didCancel) {
                 console.log("User Cancelled")
             } else {
-                const path = response.assets[0].uri
-                setImage(path)
-                // inputChangedHandler.bind(path, 'image')
+                // const path = response.assets[0].uri
+                const stringUri = String(response.assets.map((data) => data.uri))
+                setFeaturedImageUrl(stringUri)
+                setMemeBase64(response.assets.map(data => data.base64))
+                setFeaturedImage(response)
+                // setArticle(response)
+
                 setVisible(false)
             }
         })
@@ -108,7 +111,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                 console.log('User Cancelled')
             } else {
                 const uri = response.assets[0].uri
-                setImage(uri)
+                setFeaturedImage(uri)
                 setVisible(false)
 
             }
@@ -119,12 +122,12 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
         //add article properties here
         const articleData = {
             //check id ask mentor
-            id: key,
+            // id: key,
             userId: currentUserId,
             title: title,
             image: featuredImageUrl,
             userName: walletAddress,
-            dateWritten: new Date(date),
+            // dateWritten: new Date(date),
             content: content
         }
         confirmHandler(articleData)
@@ -141,29 +144,21 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
 
     }
 
-    //  id, 
-    // userId, 
-    // title, 
-    // featuredImageUrl, 
-    // userName, 
-    // dateWritten, 
-    // content  
-
     //IPFS
     const postArticle = async () => {
         //change article to image
-        const data = featuredImageUrl.assets.map((data) => data)
+        const data = featuredImage.assets.map((data) => data)
         const fileName = encodeURI(data.map((res) => res.fileName));
         const media = new Moralis.File(fileName, { base64: String(memeBase64) });
         await media.saveIPFS();
 
         save({
-            'id': id,
+            // 'id': id,
             'userId': currentUserId,
             'title': title,
             'featuredImageUrl': media._ipfs,
             'userName': walletAddress,
-            'dateWritten': dateWritten,
+            // 'dateWritten': dateWritten,
             'content': content
         });
     }
@@ -199,15 +194,15 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                 </View>
 
                 {/* date*/}
-                <View>
+                {/* <View>
                     <TextInput
                         placeholder='YYYY-MM-DD'
                         maxLength={10}
                         //revise this
-                        onChangeText={setDate}
+                        onChangeText={dateChangedHandler}
                         value={dateWritten}
                     />
-                </View>
+                </View> */}
 
                 <View>
                     <Text style={styles.text}>Article Content</Text>
@@ -242,7 +237,11 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
                         style={styles.modal}
                         animationType="slide"
                         transparent={true}
+                        onRequestClose={() => {
+                            setVisible(false);
+                        }}
                     >
+
                         <View style={styles.buttons}>
                             <Pressable style={styles.button} onPress={onImageLibraryPress}>
                                 {/* <View > */}
@@ -324,7 +323,7 @@ const styles = StyleSheet.create({
         margin: 10,
 
     },
-    //buttons edit modalcontent
+    //buttons edit modal content
     buttons: {
         backgroundColor: 'gray',
         flexDirection: 'row',

@@ -45,12 +45,14 @@ const ArticleItem = ({ text, title, userName, externalUrl, route, navigation, ..
 
                         <View style={styles.titleContainer} >
                             <Text numberOfLines={3} style={styles.title}>{props.title}</Text>
+
                             <View style={styles.headingContainer} >
                                 {/* insert ENS here baby */}
-                                <Text style={styles.userName}>{account}</Text>
+                                <Text style={styles.userName}>{props.userName}</Text>
                                 {/* <Text style={styles.dateStyle}>{props.dateWritten}</Text> */}
                             </View>
                         </View>
+                        
                     </View>
 
 
@@ -83,8 +85,6 @@ const ArticleItem = ({ text, title, userName, externalUrl, route, navigation, ..
                             color={'white'}
                             size={20}
                             onPress={() => alert('Login with Facebook')}>
-
-
                         </Icon>
 
 

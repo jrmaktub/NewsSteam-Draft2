@@ -19,6 +19,8 @@ export async function fetchArticles(){
     //data property provided by axios
     for (const key in articles.data){
         const articleObject = {
+            // change remove ID,
+            //and userId 
             id: key,
             userId: response.data[key].userId, 
             title: response.data[key], 
@@ -34,3 +36,4 @@ export async function fetchArticles(){
 
     return articles
 }
+

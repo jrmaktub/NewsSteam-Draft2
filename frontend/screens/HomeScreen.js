@@ -13,7 +13,59 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { ArticlesContext } from '../store/context/articles-context';
 import { fetchArticles } from '../utils/http';
 
+const renderArticleItem = ({ item }) => {
+    return (
+        //maybe change key and id
+        <View key={item[0].id} style={styles.viewContainer}>
+
+            <ArticleItem
+                id={item[0].id}
+                title={item[0].title}
+                image={item[0].featuredImageUrl}
+                //maybe  change userName to .ethAddress
+                userName={item[0].userName}
+                dateWritten={item[0].dateWritten}
+                content={item[0].content}
+
+            />
+
+        </View>
+    )
+}
+
+
 const HomeScreen = ({ route, navigation, ...props }) => {
+
+
+    const { Moralis } = useMoralis();
+    const [updated, setUpdated] = useState(false);
+    const [articles, setArticles] = useState();
+    const flatListRef = useRef();
+
+    const getAllArticles = async () => {
+        const posts = await Moralis.Cloud.run("getAllArticles");
+        setArticles(posts)
+    }
+
+    const subscribeToPosts = async () => {
+        //ask tutor
+        let query = new Moralis.Query('Posts');
+        let subscription = await query.subscribe();
+        subscription.on('create', notifyOnCreate);
+    }
+
+    const notifyOnCreate = (result) => {
+        setUpdated(result)
+    }
+
+    useEffect(() => {
+        getAllArticles();
+        //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
+    }, [updated])
+
+    useEffect(() => {
+        subscribeToPosts()
+    }, [updated])
 
     //context starts here
     const articlesCtx = useContext(ArticlesContext)
@@ -22,17 +74,17 @@ const HomeScreen = ({ route, navigation, ...props }) => {
 
     // const [fetchedArticles, setFetchedArticles]  = useState([])
 
-    //ceramic
-    useEffect( ()=>{
-        async function getArticles(){
-         const articles =  await fetchArticles();
-         articlesCtx.setArticles(articles)
-        //  setFetchedArticles(articles)
-        }
 
-        getArticles();
-        
-    }, []);
+    // useEffect( ()=>{
+    //     async function getArticles(){
+    //      const articles =  await fetchArticles();
+    //      articlesCtx.setArticles(articles)
+    //     //  setFetchedArticles(articles)
+    //     }
+
+    //     getArticles();
+
+    // }, []);
 
 
     // //will be fetched with web3 api
@@ -72,7 +124,9 @@ const HomeScreen = ({ route, navigation, ...props }) => {
     //     }
     // }, []);
 
-    
+
+
+
 
     return (
 
@@ -80,9 +134,20 @@ const HomeScreen = ({ route, navigation, ...props }) => {
         //itemData and item prop are provided by ReactN
 
         <SafeAreaView style={[StyleSheet.absoluteFill, styles.container]}>
+
             <View style={styles.viewContainer}>
 
                 <FlatList
+                    data={articles}
+                    renderItem={renderArticleItem}
+                    // keyExtractor={(item)=>item.id}
+                    keyExtractor={item => item.id}
+                    inverted={true}
+                    ref={flatListRef}
+                />
+
+
+                {/* <FlatList
                     data = {articlesCtx.articles}
                     // data={articles}
                     keyExtractor={item => item.id}
@@ -99,7 +164,7 @@ const HomeScreen = ({ route, navigation, ...props }) => {
                             onMoreOptions={() => { }}
                         />
                     )}
-                />
+                /> */}
 
                 {/* <ScrollView>
                     {blogsContent &&

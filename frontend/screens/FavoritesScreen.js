@@ -73,4 +73,15 @@ const styles = StyleSheet.create({
     }
 })
 
+                {/* date*/}
+                {/* <View>
+                    <TextInput
+                        placeholder='YYYY-MM-DD'
+                        maxLength={10}
+                        //revise this
+                        onChangeText={dateChangedHandler}
+                        value={dateWritten}
+                    />
+                </View> */}
+
 export default FavoritesScreen;
