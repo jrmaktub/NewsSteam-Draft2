@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useMoralis } from "react-moralis";
 
-const ArticleItem = ({ text, title, userName, externalUrl, route, ...props }) => {
+const ArticleItem = ({ text, title, userName, externalUrl,dateWritten, route, ...props }) => {
     //medium tutorial
     // const length = 100;
     // const trimmedString = text.length > 100 ?
@@ -50,7 +50,7 @@ const ArticleItem = ({ text, title, userName, externalUrl, route, ...props }) =>
                             <View style={styles.headingContainer} >
                                 {/* insert ENS here baby */}
                                 <Text style={styles.userName}>{userName}</Text>
-                                {/* <Text style={styles.dateStyle}>{props.dateWritten}</Text> */}
+                                <Text style={styles.dateStyle}>{props.dateWritten}</Text>
                             </View>
                         </View>
 

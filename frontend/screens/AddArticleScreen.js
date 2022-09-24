@@ -168,6 +168,10 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
             // 'dateWritten': dateWritten,
             'content': content
         });
+
+        navigation.navigate('HomeScreen', {
+            
+        })
     }
 
 
