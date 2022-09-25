@@ -5,7 +5,7 @@ import { View, Text, Button, StyleSheet, FlatList, Image, StatusBar } from 'reac
 import ArticleItem from '../Components/Articles/ArticleItem'
 
 import { ARTICLES } from '../data/articleFBData'
-import { useMoralis } from "react-moralis";
+import { useMoralis, useNewMoralisObject, useMoralisQuery, useMoralisFile, useWeb3ExecuteFunction } from "react-moralis";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios'
@@ -13,21 +13,42 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { ArticlesContext } from '../store/context/articles-context';
 import { fetchArticles } from '../utils/http';
 
+import { ARTICLEZY } from '../store/context/ARTICLEZ';
 
-
-
+    //         const id = article.get("objectId");
+    //         const userId =  article.get("userId")
+    //         const title = article.get("title")
+    //         const featuredImageUrl = article.get("featuredImageUrl")
+    //         const userName = article.get("userName")
+    //         const dateWritten = article.get("createdAt")
+    //         const content = article.getc("content")
 
 
 const HomeScreen = ({ route, navigation, ...props }) => {
 
 
 
-    // const { Moralis, account } = useMoralis();
-    // const [updated, setUpdated] = useState(false);
-    // const [articles, setArticles] = useState();
-    // const flatListRef = useRef();
-    // // const contractProcessor = useWeb3ExecuteFunction();
+    const { Moralis, account } = useMoralis();
+    const [updated, setUpdated] = useState(false);
+    const [articles, setArticles] = useState();
+    const flatListRef = useRef();
+    // const contractProcessor = useWeb3ExecuteFunction();
 
+    // const { fetch } = useMoralisQuery("Posts");
+
+
+    useEffect(() => {
+     async function getHistories() {
+       const Posts = Moralis.Object.extend("Posts");
+       const query = new Moralis.Query(Posts);
+       const articles = await query.find({ useMasterKey: true });
+       setArticles(articles);
+      
+     }
+     getHistories();
+   }, []);
+
+//    const {featuredImageUrl} = articles.attributes
 
 
     // const getAllArticles = async () => {
@@ -73,41 +94,47 @@ const HomeScreen = ({ route, navigation, ...props }) => {
 
     // }, []);
 
-    const renderArticleItem = ({ item }) => {
+    // function renderArticleItem( itemData ){
 
-        function selectedArticleHandler() {
-            navigation.navigate('ArticleDetailsScreen', {
-                articleId: item.id,
-            })
-        }
+    //     function selectedArticleHandler() {
+    //         navigation.navigate('ArticleDetailsScreen', {
+    //             objectId: itemData.item.id
+    //         })
+    //     }
 
-        return (
-            //maybe change key and id
-            <View style={styles.viewContainer}>
+    //     return (
+    //         //maybe change key and id
+    //         <View  style={styles.viewContainer}>
 
-                <ArticleItem
-                    id={item[0].id}
-                    title={item[0].title}
-                    image={item[0].featuredImageUrl}
-                    //maybe  change userName to .ethAddress
-                    userName={item[0].userName}
-                    dateWritten={item[0].dateWritten}
-                    content={item[0].content}
-                    onPress={selectedArticleHandler}
-
-                />
+    //             <ArticleItem
+    //                 id={itemData.objectId}
+    //                 title={itemData.title}
+    //                 image={itemData.featuredImageUrl}
+    //                 //maybe  change userName to .ethAddress
+    //                 userName={itemData.userName}
+    //                 dateWritten={itemData.dateWritten}
+    //                 content={itemData.content}
 
 
-
-            </View>
-        )
-    }
+    //             />
 
 
+
+    //         </View>
+    //     )
+    // }
 
 
 
 
+
+    // id, 
+    // userId, 
+    // title, 
+    // featuredImageUrl, 
+    // userName, 
+    // dateWritten, 
+    // content 
 
     return (
 
@@ -117,30 +144,32 @@ const HomeScreen = ({ route, navigation, ...props }) => {
         <SafeAreaView style={[StyleSheet.absoluteFill, styles.container]}>
 
             <View style={styles.viewContainer}>
-
-                {/* <FlatList
+                {/* //objectId */}
+                <FlatList
                     data={articles}
+                    keyExtractor={item =>  item.id}
                     renderItem={itemData => (
                         <ArticleItem 
-                            id = {itemData.item.id}
-                            image={itemData.item.featuredImageUrl}
-                            title={itemData.item.title}
-                            userName={itemData.item.userName}
-                            dateWritten={itemData.item.dateWritten}
-                            content={itemData.item.content}
+                        //objectId
+                            id = {itemData.item.attributes.objectId}
+                            title={itemData.item.attributes.title}
+                            image={itemData.item.attributes.featuredImageUrl}
+                            userName={itemData.item.attributes.userName}
+                            // dateWritten={itemData.item.attributes.dateWritten}
+                            content={itemData.item.attributes.content}
                             onShare = {()=>{}}
                             onMoreOptions = {()=>{}}
                         />
                     )}
                     // keyExtractor={(item)=>item.id}
-                    keyExtractor={item => item.id}
+                    
                     inverted={true}
                     ref={flatListRef}
-                /> */}
-                {/* 
+                />
+{/*                 
             <FlatList 
                 data={articles} 
-                keyExtractor={item =>  item.id} 
+                keyExtractor={(item) => item?.id} 
                 renderItem={renderArticleItem}
                     
                 inverted={true}
@@ -148,23 +177,7 @@ const HomeScreen = ({ route, navigation, ...props }) => {
             /> */}
 
 
-                <FlatList
-                    data={articlesCtx.articles}
-                    keyExtractor={item => item.id}
-                    renderItem={itemData => (
-                        <ArticleItem
-                            id={itemData.item.id}
-                            image={itemData.item.featuredImageUrl}
-                            title={itemData.item.title}
-                            userName={itemData.item.userName}
-                            dateWritten={itemData.item.dateWritten}
-                            content={itemData.item.content}
-                            onShare={() => { }}
-                            onMoreOptions={() => { }}
-                        />
-                    )}
-                    ref={flatListRef}
-                />
+                
 
 
 

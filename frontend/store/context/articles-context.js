@@ -1,37 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import { createContext, useReducer } from "react";
 
 
 // import {ARTICLES} from '../data/articleFBData'
-const [updated, setUpdated] = useState(false );
-
-  const [ARTICLES, setArticles] = useState();
-  const flatListRef = useRef();
-
-  const getAllArticles = async () => {
-    const posts = await Moralis.Cloud.run("getAllArticles");
-    setArticles(posts)
-  }
-
-  const subscribeToPosts = async () => {
-    //ask tutor
-    let query = new Moralis.Query('Posts');
-    let subscription = await query.subscribe();
-    subscription.on('create', notifyOnCreate);
-  }
-
-  const notifyOnCreate = (result) => {
-    setUpdated(result)
-  }  
-
-  useEffect(() => {
-    getAllArticles();
-    //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
-  }, [updated])
-
-  useEffect(() => {
-    subscribeToPosts()
-  }, [updated])
 
 export const ArticlesContext = createContext({
     articles: [],
@@ -72,33 +43,64 @@ function articleseReducer(state, action) {
     }
 }
 
-function ArticlesContextProvider({ children }) {
+export  function ArticlesContextProvider({ children }) {
+
+    const [updated, setUpdated] = useState(false );
+
+  const [ARTICLES, setArticles] = useState();
+  const flatListRef = useRef();
+
+  const getAllArticles = async () => {
+    const posts = await Moralis.Cloud.run("getAllArticles");
+    setArticles(posts)
+  }
+
+  const subscribeToPosts = async () => {
+    //ask tutor
+    let query = new Moralis.Query('Posts');
+    let subscription = await query.subscribe();
+    subscription.on('create', notifyOnCreate);
+  }
+
+  const notifyOnCreate = (result) => {
+    setUpdated(result)
+  }  
+
+  useEffect(() => {
+    getAllArticles();
+    //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
+  }, [updated])
+
+  useEffect(() => {
+    subscribeToPosts()
+  }, [updated])
+
 
     // const [articlesState, dispatch] = useReducer(articleseReducer, ARTICLES);
     const [articlesState, dispatch] = useReducer(articleseReducer, ARTICLES);
 
-    function addArticle(articleData) {
-        dispatch({ type: 'ADD', payload: articleData })
-    }
+    // function addArticle(articleData) {
+    //     dispatch({ type: 'ADD', payload: articleData })
+    // }
 
-    function setArticles(articles){
-        dispatch({type: 'SET',  payload: articles})
-    }
+    // function setArticles(articles){
+    //     dispatch({type: 'SET',  payload: articles})
+    // }
 
-    function deleteArticle(id) {
-        dispatch({ type: 'DELETE', payload: id })
-    }
+    // function deleteArticle(id) {
+    //     dispatch({ type: 'DELETE', payload: id })
+    // }
 
-    function updateArticle(id, articleData) {
-        dispatch({ type: 'UPDATE', payload: { id: id, data: articleData } })
-    }
+    // function updateArticle(id, articleData) {
+    //     dispatch({ type: 'UPDATE', payload: { id: id, data: articleData } })
+    // }
 
     const value ={
         articles: articlesState,
         setArticles: setArticles,
-        addArticle: addArticle,
-        deleteArticle: deleteArticle,
-        updateArticle: updateArticle
+        // addArticle: addArticle,
+        // deleteArticle: deleteArticle,
+        // updateArticle: updateArticle
     }
 
     return <ArticlesContext.Provider value={value}>{children}</ArticlesContext.Provider>

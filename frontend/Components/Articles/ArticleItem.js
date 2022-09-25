@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useMoralis } from "react-moralis";
 
-const ArticleItem = ({ id, title, userName, externalUrl,dateWritten, route, ...props }) => {
+const ArticleItem = ({ objectId,title, userName, externalUrl,dateWritten, route, ...props }) => {
     //medium tutorial
     // const length = 100;
     // const trimmedString = text.length > 100 ?
@@ -13,13 +13,23 @@ const ArticleItem = ({ id, title, userName, externalUrl,dateWritten, route, ...p
 
     // const account = `${userName.slice(0, 4)}...${userName.slice(38)}`;
 
-
+    // id, 
+    // userId, 
+    // title, 
+    // featuredImageUrl, 
+    // userName, 
+    // dateWritten, 
+    // content 
 
     const navigation = useNavigation()
 
     function selectedArticleHandler() {
         navigation.navigate('ArticleDetailsScreen', {
-            articleId: id,
+            articleId: props.id,
+            articleTitle:props.title,
+            articleImage: props.featuredImageUrl,
+            userName: props.userName,
+            articleContent: props.content
         })
     }
 

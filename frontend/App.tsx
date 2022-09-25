@@ -8,6 +8,7 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import { LogBox } from "react-native";
 
+
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import CryptoAuth from "./Components/CryptoAuth";
 import RecentTransactions from "./Components/RecentTransactions/RecentTransactions";
@@ -16,7 +17,6 @@ import Transfer from "./Components/Transfer/Transfer";
 import Profile from "./Components/Profile/Profile";
 // import Header from "./Components/Header";
 import NFTAssets from "./Components/NFT/NFTAssets";
-
 import { View, Text, Button, StyleSheet, FlatList, Image, StatusBar } from 'react-native'
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -74,14 +74,14 @@ function Home(): JSX.Element {
       />
 
       <Tab.Screen
-        name="NFTAssets"
+        name="ArticleDetailsScreen"
         options={{
-          tabBarLabel: "NFTAssets",
+          tabBarLabel: "ArticleDetailsScreen",
           tabBarIcon: ({ color, focused }) => {
             return <FontAwesomeIcon icon={faRocket} color={color} size={20} />;
           },
         }}
-        component={NFTAssets}
+        component={ArticleDetailsScreen}
       />
 
       <Tab.Screen
@@ -126,7 +126,8 @@ function getHeaderTitle(route) {
       return "Transactions";
     case "Profile":
       return "Profile";
-    
+    case "ArticleDetailsScreen":
+      return "ArticleDetailsScreen"
   }
 }
 
@@ -144,8 +145,8 @@ function App(): JSX.Element {
   return (
     //maybe remove this? Ask ETH mentor.
     <SafeAreaView style={styles.container}>
-    <ArticlesContextProvider>
-    <FavoritesContextProvider>
+    {/* <ArticlesContextProvider> */}
+    {/* <FavoritesContextProvider> */}
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Auth">
           {/* Auth Navigator: Include Login and Signup */}
@@ -164,13 +165,13 @@ function App(): JSX.Element {
             headerTitle: getHeaderTitle(route),
            })}
           />
-        <Stack.Screen name="ArticleDetailsScreen" component={ArticleDetailsScreen}/>
+        {/* <Stack.Screen name="ArticleDetailsScreen" component={ArticleDetailsScreen}/> */}
         <Stack.Screen name="AddArticleScreen" component={AddArticleScreen}/>
 
         </Stack.Navigator>
       </NavigationContainer>
-    </FavoritesContextProvider>
-    </ArticlesContextProvider>
+    {/* </FavoritesContextProvider>
+    </ArticlesContextProvider> */}
     </SafeAreaView>
   );
 }

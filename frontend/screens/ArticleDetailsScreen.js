@@ -1,4 +1,6 @@
-import React, { useContext, useState, useRef, useEffect  } from 'react'
+import React from 'react';
+import { useContext, useState, useRef, useEffect } from 'react'
+// import React, { useContext, useState, useRef, useEffect  } from 'react'
 
 import { View, Text, SafeAreaView, StyleSheet, Image, FlatList, ScrollView } from 'react-native'
 import { useLayoutEffect } from 'react'
@@ -11,31 +13,28 @@ import { FavoritesContext } from '../store/context/favorites-context'
 import { text } from 'stream/consumers'
 import axios from 'axios'
 import { useMoralis } from "react-moralis";
+import { useNewMoralisObject, useMoralisQuery, useMoralisFile, useWeb3ExecuteFunction } from "react-moralis";
 
 //moralis tutorial
 
 export const Url = "https://ipfs.io/ipfs";
 
-function ArticleDetailsScreen({ route, navigation, ...props }) {
-
-    
-    const articlesCtx = useContext(ArticlesContext)
+function ArticleDetailsScreen({ articleImage,featuredImageUrl,route, navigation, ...props }) {
 
 
-    const { Moralis,  account } = useMoralis();
-    const [updated, setUpdated] = useState(false);
+
     const [articles, setArticles] = useState();
-    const flatListRef = useRef();
+    const { data } = useMoralisQuery("Posts");
+    const { Moralis, account } = useMoralis();
+    const [updated, setUpdated] = useState(false);
 
-    const articleId = route.params?.articleId
-
+    // const postz = []
     // const getAllArticles = async () => {
     //     const posts = await Moralis.Cloud.run("getAllArticles");
     //     setArticles(posts)
+    //     postz.push(posts)
     // }
-
     // const subscribeToPosts = async () => {
-    //     //ask tutor
     //     let query = new Moralis.Query('Posts');
     //     let subscription = await query.subscribe();
     //     subscription.on('create', notifyOnCreate);
@@ -47,29 +46,40 @@ function ArticleDetailsScreen({ route, navigation, ...props }) {
 
     // useEffect(() => {
     //     getAllArticles();
-    //     //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
     // }, [updated])
 
     // useEffect(() => {
     //     subscribeToPosts()
     // }, [updated])
 
+    const articleId = route.params.articleId
+
+        const [aimage, setImage] = useState("")
+
+    // useEffect(() => {
+    // setImage(route.params.articleImage)
+    // }, [route.params])
+
+    // in your render 
+
     
 
+    // const selectedArticle = postz.find((article) => article.id === articleId)
+    // const selectedArticleTitle = postz.find((article) => article.id === articleId).title
+
+    const articleTitle = route.params.articleTitle
+    // const articleImage= route.params.articleImage
+    const articleuserName= route.params.userName
+    const articleContent = route.params.articleContent
 
 
+    //const selectedArticle = this.state.articles.find((article) => article.id === articleId)
+    //const selectedArticle = articles.find((article) => article.id === articleId)
+    //const selectedArticle = data.find((article) => article.id === articleId)
 
-    //MT end
-
-    // const favoriteArticlesCtx =  useContext(FavoritesContext);
-
-
-    const selectedArticle = articlesCtx.articles.find(
-        (article) => article.id === articleId
-        )
-    
-    // const articleIsFavorite = favoriteArticlesCtx.ids.includes(articleId)
-    
+    const articlesCtx = useContext(ArticlesContext)
+    const favoriteArticlesCtx =  useContext(FavoritesContext);
+    const articleIsFavorite = favoriteArticlesCtx.ids.includes(articleId)
 
     function changeFavoriteStatusHandler(){
        if (articleIsFavorite){
@@ -78,6 +88,9 @@ function ArticleDetailsScreen({ route, navigation, ...props }) {
         favoriteArticlesCtx.addFavorite(articleId)
        }
     }
+
+    useEffect(() => {console.log(route.params)}, [route])
+
 
     useLayoutEffect(() => {
 
@@ -97,19 +110,19 @@ function ArticleDetailsScreen({ route, navigation, ...props }) {
             <ScrollView>
 
                 <View>
-                    <Text style={styles.title}>{selectedArticle.title}</Text>
+                    <Text style={styles.title}>{articleTitle}</Text>
                 </View>
 
                 <View style={styles.imageContainer}>
-                    <Image source={{ uri: selectedArticle.featuredImageUrl }} style={styles.featuredImage} />
+                    <Image source={{ uri: featuredImageUrl }} style={styles.featuredImage} />
                 </View>
 
                 <View style={styles.authorDetails}>
-                    <Text style={styles.authorInfo}>{selectedArticle.userName}</Text>
-                    <Text style={styles.dateInfo}>{selectedArticle.dateWritten}</Text>
+                    <Text style={styles.authorInfo}>{articleuserName}</Text>
+                    {/* <Text style={styles.dateInfo}>{selectedArticle.dateWritten}</Text> */}
                 </View>
 
-                <Text style={styles.content}>{selectedArticle.content}</Text>
+                <Text style={styles.content}>{articleContent}</Text>
 
 
 
@@ -137,7 +150,7 @@ function ArticleDetailsScreen({ route, navigation, ...props }) {
                 </Icon>
 
                 <Icon
-                    name={articleIsFavorite ? 'bookmark' :'bookmark-outline'}
+                    name={articleIsFavorite ? 'bookmark' : 'bookmark-outline'}
                     color={'white'}
                     size={20}
                     onPress={changeFavoriteStatusHandler}
@@ -182,7 +195,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        
+
     },
     title: {
         color: 'white',
@@ -236,7 +249,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 10,
         left: 10,
         right: 10,
-       
+
     }
 
 })

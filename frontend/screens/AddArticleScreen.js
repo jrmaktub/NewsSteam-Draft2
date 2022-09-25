@@ -11,6 +11,7 @@ import { ArticlesContext } from '../store/context/articles-context'
 import { useMoralis, useNewMoralisObject, useMoralisQuery, useMoralisFile, useWeb3ExecuteFunction } from "react-moralis";
 // import * as ImagePicker from 'react-native-image-picker';
 import { storeArticle } from '../utils/http';
+import uuid from 'react-native-uuid';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -40,51 +41,51 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
     const contractProcessor = useWeb3ExecuteFunction();
 
     //mint
-    const mint = async (account, uri) => {
+    // const mint = async (account, uri) => {
 
-        let options = {
-            contractAddress: "0x9650a926fcE32b552b9f160245a9A1E378d3fc13",
-            functionName: "safeMint",
-            abi: [
-                {
-                    inputs: [
-                        {
-                            internalType: "address",
-                            name: "to",
-                            type: "address",
-                        },
-                        {
-                            internalType: "string",
-                            name: "uri",
-                            type: "string",
-                        },
-                    ],
-                    name: "safeMint",
-                    outputs: [],
-                    stateMutability: "payable",
-                    type: "function",
-                },
-            ],
-            params: {
-                to: account,
-                uri: uri,
-            },
-            msgValue: Moralis.Units.ETH(1),
-        }
+    //     let options = {
+    //         contractAddress: "0x9650a926fcE32b552b9f160245a9A1E378d3fc13",
+    //         functionName: "safeMint",
+    //         abi: [
+    //             {
+    //                 inputs: [
+    //                     {
+    //                         internalType: "address",
+    //                         name: "to",
+    //                         type: "address",
+    //                     },
+    //                     {
+    //                         internalType: "string",
+    //                         name: "uri",
+    //                         type: "string",
+    //                     },
+    //                 ],
+    //                 name: "safeMint",
+    //                 outputs: [],
+    //                 stateMutability: "payable",
+    //                 type: "function",
+    //             },
+    //         ],
+    //         params: {
+    //             to: account,
+    //             uri: uri,
+    //         },
+    //         msgValue: Moralis.Units.ETH(1),
+    //     }
 
-        await contractProcessor.fetch({
-            params: options,
-            onSuccess: () => {
-                alert("Succesful Mint");
-                setText("");
-                setTitle("");
-            },
-            onError: (error) => {
-                alert(error.message);
-            },
-        });
+    //     await contractProcessor.fetch({
+    //         params: options,
+    //         onSuccess: () => {
+    //             alert("Succesful Mint");
+    //             setText("");
+    //             setTitle("");
+    //         },
+    //         onError: (error) => {
+    //             alert(error.message);
+    //         },
+    //     });
 
-    }
+    // }
     //mint end
 
 
@@ -197,14 +198,14 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
 
     }
 
-    function dateChangedHandler(enteredDate) {
-        let formatedDate = getFormattedDate(enteredDate)
-        setDate(formatedDate)
-    }
+    // function dateChangedHandler(enteredDate) {
+    //     let formatedDate = getFormattedDate(enteredDate)
+    //     setDate(formatedDate)
+    // }
 
-    const [id, setId] = useState('')
-    const id2 = new Date.toString + Math.random().toString
-    setId(id2)
+    // const [id, setId] = useState('')
+    // const id2 = new Date.toString + Math.random().toString
+    // setId(id2)
 
 
 
@@ -217,7 +218,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
         await media.saveIPFS();
 
          save({
-             'id' : id,
+            //  'id' : uuid.v4(),
             'userId': currentUserId,
             'title': title,
             'featuredImageUrl': media._ipfs,
@@ -227,33 +228,33 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
             saveIPFS: true,
         });
 
-        const nftResult = await uploadNftMetada(result.ipfs());
-        await mint(account, nftResult.ipfs());
-        navigation.navigate('HomeScreen', {
+        // const nftResult = await uploadNftMetada(result.ipfs());
+        // await mint(account, nftResult.ipfs());
+        // navigation.navigate('HomeScreen', {
 
-        })
+        // })
     }
 
-    const uploadNftMetada = async (url) => {
-        const metadataNft = {
-            'userId': currentUserId,
-            'title': title,
-            'featuredImageUrl': media._ipfs,
-            'userName': walletAddress,
-            // 'dateWritten': dateWritten,
-            'content': content,
-            externalUrl: url,
-        };
-        const resultNft = await saveFile(
-            "metadata.json",
-            { base64: btoa(JSON.stringify(metadataNft)) },
-            {
-                type: "base64",
-                saveIPFS: true,
-            }
-        );
-        return resultNft;
-    };
+    // const uploadNftMetada = async (url) => {
+    //     const metadataNft = {
+    //         'userId': currentUserId,
+    //         'title': title,
+    //         'featuredImageUrl': media._ipfs,
+    //         'userName': walletAddress,
+    //         // 'dateWritten': dateWritten,
+    //         'content': content,
+    //         externalUrl: url,
+    //     };
+    //     const resultNft = await saveFile(
+    //         "metadata.json",
+    //         { base64: btoa(JSON.stringify(metadataNft)) },
+    //         {
+    //             type: "base64",
+    //             saveIPFS: true,
+    //         }
+    //     );
+    //     return resultNft;
+    // };
 
 
     return (

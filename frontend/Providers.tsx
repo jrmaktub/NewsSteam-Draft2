@@ -18,6 +18,8 @@ import {
   REACT_APP_MORALIS_SERVER_URL,
 } from '@env';
 
+
+import { ArticlesContextProvider } from './store/context/articles-context';
 // import { default as theme } from './theme.json';
 
 interface ProvidersProps {
@@ -61,6 +63,7 @@ const walletConnectOptions: WalletConnectProviderProps = {
 
 export const Providers = ({children}: ProvidersProps) => {
   return (
+    <ArticlesContextProvider>
     <WalletConnectProvider {...walletConnectOptions}>
       <MoralisProvider
         appId={appId}
@@ -74,5 +77,6 @@ export const Providers = ({children}: ProvidersProps) => {
         </MoralisDappProvider>
       </MoralisProvider>
     </WalletConnectProvider>
+    </ArticlesContextProvider>
   );
 };
