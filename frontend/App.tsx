@@ -126,6 +126,7 @@ function getHeaderTitle(route) {
       return "Transactions";
     case "Profile":
       return "Profile";
+    
   }
 }
 

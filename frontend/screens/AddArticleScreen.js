@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Dimensions } from 'react-native';
 import { useMoralisDapp } from '../providers/MoralisDappProvider/MoralisDappProvider'
 import { ArticlesContext } from '../store/context/articles-context'
-import { useMoralis, useNewMoralisObject, useMoralisQuery, useMoralisFile } from "react-moralis";
+import { useMoralis, useNewMoralisObject, useMoralisQuery, useMoralisFile, useWeb3ExecuteFunction } from "react-moralis";
 // import * as ImagePicker from 'react-native-image-picker';
 import { storeArticle } from '../utils/http';
 
@@ -29,14 +29,63 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
 
     const [content, setContent] = useState('')
     const [dateWritten, setDate] = useState('')
-
-    const { Moralis } = useMoralis();
+    const { saveFile } = useMoralisFile();
+    const { Moralis, account } = useMoralis();
     const { data } = useMoralisQuery("User");
     const currentUserId = String(data.map((data) => data.id));
     const { walletAddress, chainId } = useMoralisDapp();
     const { isSaving, error, save } = useNewMoralisObject('Posts');
     const [pickerResponse, setPickerResponse] = useState(null)
     const [visible, setVisible] = useState(false)
+    const contractProcessor = useWeb3ExecuteFunction();
+
+    //mint
+    const mint = async (account, uri) => {
+
+        let options = {
+            contractAddress: "0x9650a926fcE32b552b9f160245a9A1E378d3fc13",
+            functionName: "safeMint",
+            abi: [
+                {
+                    inputs: [
+                        {
+                            internalType: "address",
+                            name: "to",
+                            type: "address",
+                        },
+                        {
+                            internalType: "string",
+                            name: "uri",
+                            type: "string",
+                        },
+                    ],
+                    name: "safeMint",
+                    outputs: [],
+                    stateMutability: "payable",
+                    type: "function",
+                },
+            ],
+            params: {
+                to: account,
+                uri: uri,
+            },
+            msgValue: Moralis.Units.ETH(1),
+        }
+
+        await contractProcessor.fetch({
+            params: options,
+            onSuccess: () => {
+                alert("Succesful Mint");
+                setText("");
+                setTitle("");
+            },
+            onError: (error) => {
+                alert(error.message);
+            },
+        });
+
+    }
+    //mint end
 
 
 
@@ -49,10 +98,7 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
         setContent(enteredContent)
     }
 
-    function dateChangedHandler(enteredDate) {
-        let formatedDate = getFormattedDate(enteredDate)
-        setDate(formatedDate)
-    }
+
 
     const onImageLibraryPress = () => {
 
@@ -151,6 +197,17 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
 
     }
 
+    function dateChangedHandler(enteredDate) {
+        let formatedDate = getFormattedDate(enteredDate)
+        setDate(formatedDate)
+    }
+
+    const [id, setId] = useState('')
+    const id2 = new Date.toString + Math.random().toString
+    setId(id2)
+
+
+
     //IPFS
     const postArticle = async () => {
         //change article to image
@@ -159,20 +216,44 @@ const AddArticleScreen = ({ route, navigation, ...props }) => {
         const media = new Moralis.File(fileName, { base64: String(articleBase64) });
         await media.saveIPFS();
 
-        save({
-            // 'id': id,
+         save({
+             'id' : id,
             'userId': currentUserId,
             'title': title,
             'featuredImageUrl': media._ipfs,
             'userName': walletAddress,
             // 'dateWritten': dateWritten,
-            'content': content
+            'content': content,
+            saveIPFS: true,
         });
 
+        const nftResult = await uploadNftMetada(result.ipfs());
+        await mint(account, nftResult.ipfs());
         navigation.navigate('HomeScreen', {
-            
+
         })
     }
+
+    const uploadNftMetada = async (url) => {
+        const metadataNft = {
+            'userId': currentUserId,
+            'title': title,
+            'featuredImageUrl': media._ipfs,
+            'userName': walletAddress,
+            // 'dateWritten': dateWritten,
+            'content': content,
+            externalUrl: url,
+        };
+        const resultNft = await saveFile(
+            "metadata.json",
+            { base64: btoa(JSON.stringify(metadataNft)) },
+            {
+                type: "base64",
+                saveIPFS: true,
+            }
+        );
+        return resultNft;
+    };
 
 
     return (

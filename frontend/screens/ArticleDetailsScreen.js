@@ -1,13 +1,13 @@
-import React, { useContext, useState, useRef  } from 'react'
+import React, { useContext, useState, useRef, useEffect  } from 'react'
 
 import { View, Text, SafeAreaView, StyleSheet, Image, FlatList, ScrollView } from 'react-native'
 import { useLayoutEffect } from 'react'
+import { ArticlesContext } from '../store/context/articles-context'
 
-import { useEffect } from 'react'
 import { color } from 'react-native-reanimated'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FavoritesContext } from '../store/context/favorites-context'
-import {ARTICLES} from '../data/articleFBData'
+// import {ARTICLES} from '../data/articleFBData'
 import { text } from 'stream/consumers'
 import axios from 'axios'
 import { useMoralis } from "react-moralis";
@@ -19,38 +19,42 @@ export const Url = "https://ipfs.io/ipfs";
 function ArticleDetailsScreen({ route, navigation, ...props }) {
 
     
+    const articlesCtx = useContext(ArticlesContext)
 
-    const { Moralis } = useMoralis();
+
+    const { Moralis,  account } = useMoralis();
     const [updated, setUpdated] = useState(false);
     const [articles, setArticles] = useState();
     const flatListRef = useRef();
 
-    const getAllArticles = async () => {
-        const posts = await Moralis.Cloud.run("getAllArticles");
-        setArticles(posts)
-    }
+    const articleId = route.params?.articleId
 
-    const subscribeToPosts = async () => {
-        //ask tutor
-        let query = new Moralis.Query('Posts');
-        let subscription = await query.subscribe();
-        subscription.on('create', notifyOnCreate);
-    }
+    // const getAllArticles = async () => {
+    //     const posts = await Moralis.Cloud.run("getAllArticles");
+    //     setArticles(posts)
+    // }
 
-    const notifyOnCreate = (result) => {
-        setUpdated(result)
-    }
+    // const subscribeToPosts = async () => {
+    //     //ask tutor
+    //     let query = new Moralis.Query('Posts');
+    //     let subscription = await query.subscribe();
+    //     subscription.on('create', notifyOnCreate);
+    // }
 
-    useEffect(() => {
-        getAllArticles();
-        //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
-    }, [updated])
+    // const notifyOnCreate = (result) => {
+    //     setUpdated(result)
+    // }
 
-    useEffect(() => {
-        subscribeToPosts()
-    }, [updated])
+    // useEffect(() => {
+    //     getAllArticles();
+    //     //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
+    // }, [updated])
 
-    const articleId = route.params.articleId
+    // useEffect(() => {
+    //     subscribeToPosts()
+    // }, [updated])
+
+    
 
 
 
@@ -60,7 +64,9 @@ function ArticleDetailsScreen({ route, navigation, ...props }) {
     // const favoriteArticlesCtx =  useContext(FavoritesContext);
 
 
-    const selectedArticle = articles.find((article) => article.id === articleId)
+    const selectedArticle = articlesCtx.articles.find(
+        (article) => article.id === articleId
+        )
     
     // const articleIsFavorite = favoriteArticlesCtx.ids.includes(articleId)
     

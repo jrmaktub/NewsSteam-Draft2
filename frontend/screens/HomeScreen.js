@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef  } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 
 import { View, Text, Button, StyleSheet, FlatList, Image, StatusBar } from 'react-native'
 
@@ -13,64 +13,51 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { ArticlesContext } from '../store/context/articles-context';
 import { fetchArticles } from '../utils/http';
 
-const renderArticleItem = ({ item }) => {
-    return (
-        //maybe change key and id
-        <View key={item[0].id} style={styles.viewContainer}>
 
-            <ArticleItem
-                id={item[0].id}
-                title={item[0].title}
-                image={item[0].featuredImageUrl}
-                //maybe  change userName to .ethAddress
-                userName={item[0].userName}
-                dateWritten={item[0].dateWritten}
-                content={item[0].content}
 
-            />
 
-        </View>
-    )
-}
 
 
 const HomeScreen = ({ route, navigation, ...props }) => {
 
 
-    const { Moralis } = useMoralis();
-    const [updated, setUpdated] = useState(false);
-    const [articles, setArticles] = useState();
-    const flatListRef = useRef();
 
-    const getAllArticles = async () => {
-        const posts = await Moralis.Cloud.run("getAllArticles");
-        setArticles(posts)
-    }
+    // const { Moralis, account } = useMoralis();
+    // const [updated, setUpdated] = useState(false);
+    // const [articles, setArticles] = useState();
+    // const flatListRef = useRef();
+    // // const contractProcessor = useWeb3ExecuteFunction();
 
-    const subscribeToPosts = async () => {
-        //ask tutor
-        let query = new Moralis.Query('Posts');
-        let subscription = await query.subscribe();
-        subscription.on('create', notifyOnCreate);
-    }
 
-    const notifyOnCreate = (result) => {
-        setUpdated(result)
-    }
 
-    useEffect(() => {
-        getAllArticles();
-        //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
-    }, [updated])
+    // const getAllArticles = async () => {
+    //     const posts = await Moralis.Cloud.run("getAllArticles");
+    //     setArticles(posts)
+    // }
 
-    useEffect(() => {
-        subscribeToPosts()
-    }, [updated])
+    // const subscribeToPosts = async () => {
+    //     //ask tutor
+    //     let query = new Moralis.Query('Posts');
+    //     let subscription = await query.subscribe();
+    //     subscription.on('create', notifyOnCreate);
+    // }
+
+    // const notifyOnCreate = (result) => {
+    //     setUpdated(result)
+    // }
+
+    // useEffect(() => {
+    //     getAllArticles();
+    //     //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
+    // }, [updated])
+
+    // useEffect(() => {
+    //     subscribeToPosts()
+    // }, [updated])
 
     //context starts here
     const articlesCtx = useContext(ArticlesContext)
 
-    // const articles = ARTICLES
 
     // const [fetchedArticles, setFetchedArticles]  = useState([])
 
@@ -86,43 +73,37 @@ const HomeScreen = ({ route, navigation, ...props }) => {
 
     // }, []);
 
+    const renderArticleItem = ({ item }) => {
 
-    // //will be fetched with web3 api
-    // const [blogs, setBlogs] = useState([
-    //     {
-    //         externalUrl: "https://ipfs.io/ipfs/Qmd7DuscoYu3bqBavGxcxvoR1yZDhp8B4sNncyorZphucM",
-    //         author_of: "xxxx"
-    //     }
-    // ])
+        function selectedArticleHandler() {
+            navigation.navigate('ArticleDetailsScreen', {
+                articleId: item.id,
+            })
+        }
 
-    // //will use axios to fetch token URI and title and blog post itself and store it
-    // const [blogsContent, setBlogsContent] = useState()
+        return (
+            //maybe change key and id
+            <View style={styles.viewContainer}>
 
-    // const fetchArticlesContent = async () => {
+                <ArticleItem
+                    id={item[0].id}
+                    title={item[0].title}
+                    image={item[0].featuredImageUrl}
+                    //maybe  change userName to .ethAddress
+                    userName={item[0].userName}
+                    dateWritten={item[0].dateWritten}
+                    content={item[0].content}
+                    onPress={selectedArticleHandler}
 
-    //     const limit7 = blogs?.slice(0, 7);
-    //     let contentBlog = [];
+                />
 
-    //     if (limit7) {
-    //         limit7.map(async (blog) => {
-    //             if (blog) {
-    //                 const { externalUrl, author_of } = blog;
-    //                 const res = await axios.get(externalUrl);
-    //                 const text = res.data.text.toString();
-    //                 const title = res.data.title;
-    //                 contentBlog.push({ title, text, author_of, externalUrl });
-    //             }
-    //         })
-    //     }
 
-    //     setBlogsContent(contentBlog)
-    // };
 
-    // useEffect(() => {
-    //     if (blogs && !blogsContent) {
-    //         fetchArticlesContent
-    //     }
-    // }, []);
+            </View>
+        )
+    }
+
+
 
 
 
@@ -137,22 +118,40 @@ const HomeScreen = ({ route, navigation, ...props }) => {
 
             <View style={styles.viewContainer}>
 
-                <FlatList
+                {/* <FlatList
                     data={articles}
-                    renderItem={renderArticleItem}
+                    renderItem={itemData => (
+                        <ArticleItem 
+                            id = {itemData.item.id}
+                            image={itemData.item.featuredImageUrl}
+                            title={itemData.item.title}
+                            userName={itemData.item.userName}
+                            dateWritten={itemData.item.dateWritten}
+                            content={itemData.item.content}
+                            onShare = {()=>{}}
+                            onMoreOptions = {()=>{}}
+                        />
+                    )}
                     // keyExtractor={(item)=>item.id}
                     keyExtractor={item => item.id}
                     inverted={true}
                     ref={flatListRef}
-                />
+                /> */}
+                {/* 
+            <FlatList 
+                data={articles} 
+                keyExtractor={item =>  item.id} 
+                renderItem={renderArticleItem}
+                    
+                inverted={true}
+                ref={flatListRef}
+            /> */}
 
 
-                {/* <FlatList
-                    data = {articlesCtx.articles}
-                    // data={articles}
+                <FlatList
+                    data={articlesCtx.articles}
                     keyExtractor={item => item.id}
                     renderItem={itemData => (
-
                         <ArticleItem
                             id={itemData.item.id}
                             image={itemData.item.featuredImageUrl}
@@ -164,27 +163,10 @@ const HomeScreen = ({ route, navigation, ...props }) => {
                             onMoreOptions={() => { }}
                         />
                     )}
-                /> */}
+                    ref={flatListRef}
+                />
 
-                {/* <ScrollView>
-                    {blogsContent &&
-                        blogsContent.map((blog, i) => {
-                            const { title, text, author_of, externalUrl, id } = blog
-                            return (
-                                <ArticleItem
-                                    key={id}
-                                    id={key}
-                                    title={title}
-                                    userName={author_of}
-                                    content={text}
-                                    externalUrl={externalUrl}
 
-                                />
-                            )
-                        })
-
-                    }
-                </ScrollView> */}
 
             </View>
         </SafeAreaView>

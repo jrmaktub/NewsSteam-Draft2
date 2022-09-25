@@ -24,7 +24,7 @@ Moralis.Cloud.define("getAllArticles", async function (request) {
             //   if (data.attributes.createdById === res.id) {
             //maybechange attributes to only post object
             return {
-                id: data.id,
+                id: data.attributes.id,
                 userId: data.attributes.userId,
                 title: data.attributes.title,
                 featuredImageUrl: data.attributes.featuredImageUrl,

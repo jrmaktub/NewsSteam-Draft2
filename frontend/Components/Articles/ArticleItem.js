@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useMoralis } from "react-moralis";
 
-const ArticleItem = ({ text, title, userName, externalUrl,dateWritten, route, ...props }) => {
+const ArticleItem = ({ id, title, userName, externalUrl,dateWritten, route, ...props }) => {
     //medium tutorial
     // const length = 100;
     // const trimmedString = text.length > 100 ?
@@ -19,14 +19,14 @@ const ArticleItem = ({ text, title, userName, externalUrl,dateWritten, route, ..
 
     function selectedArticleHandler() {
         navigation.navigate('ArticleDetailsScreen', {
-            articleId: props.id,
+            articleId: id,
         })
     }
 
 
 
     return (
-        <View style={styles.finalContainer}>
+        <View  style={styles.finalContainer}>
             <Pressable
                 android_ripple={{ color: '#ccc' }}
                 style={({ pressed }) => (pressed ? styles.buttonPressed : null)}

@@ -2,31 +2,45 @@ import React from 'react';
 import { createContext, useReducer } from "react";
 
 
-import {ARTICLES} from '../data/articleFBData'
+// import {ARTICLES} from '../data/articleFBData'
+const [updated, setUpdated] = useState(false );
 
-// id, 
-// userId, 
-// title, 
-// featuredImageUrl, 
-// userName, 
-// dateWritten, 
-// content 
+  const [ARTICLES, setArticles] = useState();
+  const flatListRef = useRef();
 
-//will be fetched with web3 api
-// const [blogs, setBlogs] = useState([
-//     {
-//         externalUrl: "https://ipfs.io/ipfs/Qmd7DuscoYu3bqBavGxcxvoR1yZDhp8B4sNncyorZphucM",
-//         author_of: "xxxx"
-//     }
-// ])
+  const getAllArticles = async () => {
+    const posts = await Moralis.Cloud.run("getAllArticles");
+    setArticles(posts)
+  }
+
+  const subscribeToPosts = async () => {
+    //ask tutor
+    let query = new Moralis.Query('Posts');
+    let subscription = await query.subscribe();
+    subscription.on('create', notifyOnCreate);
+  }
+
+  const notifyOnCreate = (result) => {
+    setUpdated(result)
+  }  
+
+  useEffect(() => {
+    getAllArticles();
+    //flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
+  }, [updated])
+
+  useEffect(() => {
+    subscribeToPosts()
+  }, [updated])
 
 export const ArticlesContext = createContext({
     articles: [],
-    addArticle: ({ id, userId, title, featuredImageUrl,userName, dateWritten, content }) => { },
-    setArticles: (articles)=> ({}),
-    deleteArticle: (id) => { },
-    //maybe add id?
-    updateArticle: (id, { userId, title, featuredImageUrl,userName, dateWritten, content }) => { }
+    // addArticle: ({ id, userId, title, featuredImageUrl,userName, dateWritten, content }) => { },
+    // setArticles: (articles)=> ({}),
+    // deleteArticle: (id) => { },
+    // //maybe add id?
+    // updateArticle: (id, { userId, title, featuredImageUrl,userName, dateWritten, content }) => { }
+    
 })
 
 function articleseReducer(state, action) {
@@ -61,7 +75,7 @@ function articleseReducer(state, action) {
 function ArticlesContextProvider({ children }) {
 
     // const [articlesState, dispatch] = useReducer(articleseReducer, ARTICLES);
-    const [articlesState, dispatch] = useReducer(articleseReducer, []);
+    const [articlesState, dispatch] = useReducer(articleseReducer, ARTICLES);
 
     function addArticle(articleData) {
         dispatch({ type: 'ADD', payload: articleData })
